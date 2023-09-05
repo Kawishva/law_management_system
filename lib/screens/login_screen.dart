@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Stack(
           children: [
             Align(
-                alignment: const AlignmentDirectional(1.5, 0),
+                alignment: const AlignmentDirectional(1, 0),
                 child: Opacity(
                   opacity: 0.4,
                   child: Image.asset(
@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            print('Forgote Password');
+                            print('Forgot Password');
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 135),
@@ -207,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 115),
                 child: Opacity(
-                  opacity: 0.75,
+                  opacity: 0.7,
                   child: ElevatedButton(
                     onPressed: () {
                       print('Go to register page.');
