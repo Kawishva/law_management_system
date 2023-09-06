@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_management_system/components/user_email_paswd_component.dart';
+import 'package:law_management_system/components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
@@ -17,8 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final userPassword = TextEditingController();
 
   WindowOptions windowOptions = const WindowOptions(
-      size: Size(800, 600),
-      // maximumSize: Size(800, 600),
+      size: Size(960, 640),
       minimumSize: Size(800, 600),
       center: true,
       title: 'LMS');
@@ -26,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
     windowManager.ensureInitialized();
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -51,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Stack(
           children: [
             Align(
-                alignment: const AlignmentDirectional(1.5, 0),
+                alignment: const AlignmentDirectional(1, 0),
                 child: Opacity(
                   opacity: 0.4,
                   child: Image.asset(
@@ -61,45 +59,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     isAntiAlias: true,
                   ),
                 )),
-            /* Center(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Expanded(
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.7),
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(5, 3),
-                            )
-                          ]),
-                    ),
-                  ),
-                ),
-              ),
-            ),*/
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 30),
                 child: Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(left: 30),
-                    width: 300,
+                    margin: const EdgeInsets.only(left: 40),
+                    width: 340,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(
-                          height: 70,
-                        ),
+                        /* const SizedBox(
+                          height: 100,
+                        ),*/
                         const Text(
                           'LOGIN',
                           style: TextStyle(
@@ -110,10 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(left: 90),
                               width: 25,
                               height: 7,
                               decoration: BoxDecoration(
@@ -121,9 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: const Color(0xFFBC1307)),
                             ),
                             const SizedBox(
-                              width: 5,
+                              width: 10,
                             ),
                             Container(
+                              margin: EdgeInsets.only(right: 15),
                               width: 70,
                               height: 7,
                               decoration: BoxDecoration(
@@ -135,18 +112,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 50,
                         ),
-                        EmailPasswordField(
+                        TextInputComponent(
                             controller: userName,
-                            prefixText: 'Name',
                             hintText: 'Enter User Name',
                             obscureText: false,
                             textInputType: TextInputType.text),
                         const SizedBox(
                           height: 10,
                         ),
-                        EmailPasswordField(
+                        TextInputComponent(
                             controller: userPassword,
-                            prefixText: 'Password',
                             hintText: 'Enter Password',
                             obscureText: true,
                             textInputType: TextInputType.text),

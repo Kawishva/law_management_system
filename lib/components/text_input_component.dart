@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 //making email & password input field holder that can implement on other .dart files
-class EmailPasswordField extends StatelessWidget {
+class TextInputComponent extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
   final controller;
-  final String hintText, prefixText;
+  final String hintText;
   final bool obscureText;
   final TextInputType textInputType;
 
-  const EmailPasswordField({
+  const TextInputComponent({
     super.key,
     required this.controller,
     required this.hintText,
-    required this.prefixText,
     required this.obscureText,
     required this.textInputType,
   });

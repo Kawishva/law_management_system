@@ -4,7 +4,7 @@ import 'package:page_animation_transition/animations/left_to_right_faded_transit
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../components/user_email_paswd_component.dart';
+import '../components/text_input_component.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -18,18 +18,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final userPassword = TextEditingController();
 
   WindowOptions windowOptions = const WindowOptions(
-      size: Size(800, 600),
-      // maximumSize: Size(800, 600),
-      minimumSize: Size(800, 600),
-      center: true,
-      title: 'LMS');
+      size: Size(960, 640), minimumSize: Size(800, 600), title: 'LMS');
 
   @override
   void initState() {
     super.initState();
-
     windowManager.ensureInitialized();
-
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
@@ -52,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Stack(
           children: [
             Align(
-                alignment: const AlignmentDirectional(-1.5, 0),
+                alignment: const AlignmentDirectional(-1, 0),
                 child: Opacity(
                   opacity: 0.4,
                   child: Image.asset(
@@ -62,29 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     alignment: Alignment.centerRight,
                   ),
                 )),
-            /* Center(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Expanded(
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.7),
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(5, 3),
-                            )
-                          ]),
-                    ),
-                  ),
-                ),
-              ),
-            ),*/
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
@@ -92,117 +63,204 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Expanded(
                   child: Container(
                     margin: const EdgeInsets.only(right: 30),
-                    width: 300,
+                    width: 500,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 70,
+                          height: 15,
                         ),
-                        const Text(
-                          'REGISTER',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 40,
-                            fontFamily: 'Aoboshi One',
-                            fontWeight: FontWeight.bold,
+                        const Align(
+                          alignment: AlignmentDirectional(-0.9, 0),
+                          child: Text(
+                            'REGISTER',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 30,
+                              fontFamily: 'Aoboshi One',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(left: 90),
-                              width: 105,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color(0xFF160694)),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              width: 40,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color(0xFF160694)),
-                            ),
-                          ],
+                        Align(
+                          alignment: const AlignmentDirectional(-0.9, 0),
+                          child: Container(
+                            width: 80,
+                            height: 5,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: const Color(0xFF160694)),
+                          ),
                         ),
                         const SizedBox(
                           height: 50,
                         ),
-                        EmailPasswordField(
-                            controller: userName,
-                            prefixText: 'Name',
-                            hintText: 'Enter User Name',
-                            obscureText: false,
-                            textInputType: TextInputType.text),
+                        const Align(
+                          alignment: AlignmentDirectional(-0.9, 0),
+                          child: Text(
+                            'Name',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Aoboshi One',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-0.85, 0),
+                          child: TextInputComponent(
+                              controller: userName,
+                              hintText: '',
+                              obscureText: false,
+                              textInputType: TextInputType.text),
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
-                        EmailPasswordField(
-                            controller: userPassword,
-                            prefixText: 'Password',
-                            hintText: 'Enter Password',
-                            obscureText: true,
-                            textInputType: TextInputType.text),
+                        const Align(
+                          alignment: AlignmentDirectional(-0.9, 0),
+                          child: Text(
+                            'Email',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Aoboshi One',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-0.85, 0),
+                          child: TextInputComponent(
+                              controller: userPassword,
+                              hintText: '',
+                              obscureText: true,
+                              textInputType: TextInputType.text),
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            print('Forgot Password');
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 135),
-                            child: Text(
-                              'Forgot Password ?',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black.withOpacity(0.7)),
+                        const Align(
+                          alignment: AlignmentDirectional(-0.9, 0),
+                          child: Text(
+                            'Password',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Aoboshi One',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-0.85, 0),
+                          child: TextInputComponent(
+                              controller: userPassword,
+                              hintText: '',
+                              obscureText: true,
+                              textInputType: TextInputType.text),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Align(
+                          alignment: AlignmentDirectional(-0.9, 0),
+                          child: Text(
+                            'Confirm Password',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Aoboshi One',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-0.85, 0),
+                          child: TextInputComponent(
+                              controller: userPassword,
+                              hintText: '',
+                              obscureText: true,
+                              textInputType: TextInputType.text),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-0.85, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              print('Name : ' +
+                                  userName.text +
+                                  ' \n Password :' +
+                                  userPassword.text);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(230, 40),
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                backgroundColor: const Color(0xFF160694),
+                                textStyle: const TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold)),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(left: 70),
+                                    child: Text('Register')),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                ImageIcon(
+                                  AssetImage(
+                                      'lib/image_assets/register_png.png'),
+                                  size: 20,
+                                )
+                              ],
                             ),
                           ),
                         ),
                         const SizedBox(
                           height: 30,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            print('Name : ' +
-                                userName.text +
-                                ' \n Password :' +
-                                userPassword.text);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              fixedSize: const Size(230, 40),
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              backgroundColor: const Color(0xFF160694),
-                              textStyle: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold)),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Padding(
-                                  padding: EdgeInsets.only(left: 70),
-                                  child: Text('Register')),
-                              SizedBox(
-                                width: 50,
+                              Text(
+                                'If you already have an account',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black.withOpacity(0.7)),
                               ),
-                              ImageIcon(
-                                AssetImage('lib/image_assets/register_png.png'),
-                                size: 20,
-                              )
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                      PageAnimationTransition(
+                                          page: const LoginScreen(),
+                                          pageAnimationType:
+                                              LeftToRightFadedTransition()));
+                                },
+                                child: const Text(
+                                  'Sign in',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic,
+                                      color: Color(0xFF160694)),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -213,42 +271,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: const AlignmentDirectional(0.83, 0),
               child: Padding(
-                padding: const EdgeInsets.only(left: 115),
-                child: Opacity(
-                  opacity: 0.7,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(PageAnimationTransition(
-                          page: const LoginScreen(),
-                          pageAnimationType: LeftToRightFadedTransition()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(250, 120),
-                        elevation: 10,
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: const BorderSide(
-                                width: 3, color: Colors.white)),
-                        backgroundColor: const Color(0xFF160694),
-                        textStyle: const TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold)),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Login'),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Icon(
-                          Icons.login_rounded,
-                          size: 50,
-                        )
-                      ],
+                padding: const EdgeInsets.only(top: 100),
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 60,
+                      backgroundImage:
+                          AssetImage('lib/image_assets/userDp.png'),
                     ),
-                  ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        print('Name : ' +
+                            userName.text +
+                            ' \n Password :' +
+                            userPassword.text);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(100, 30),
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          backgroundColor: const Color(0xFF160694),
+                          textStyle: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.bold)),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Register'),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Icon(
+                            Icons.upload_rounded,
+                            size: 20,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
