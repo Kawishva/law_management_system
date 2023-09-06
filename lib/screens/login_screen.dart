@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:law_management_system/components/user_email_paswd_component.dart';
+import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
+import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,31 +16,32 @@ class _LoginScreenState extends State<LoginScreen> {
   final userName = TextEditingController();
   final userPassword = TextEditingController();
 
+  WindowOptions windowOptions = const WindowOptions(
+      size: Size(800, 600),
+      // maximumSize: Size(800, 600),
+      minimumSize: Size(800, 600),
+      center: true,
+      title: 'LMS');
+
   @override
   void initState() {
     super.initState();
 
     windowManager.ensureInitialized();
 
-    WindowOptions windowOptions = const WindowOptions(
-      size: Size(800, 600),
-      maximumSize: Size(800, 600),
-      minimumSize: Size(400, 300),
-      center: true,
-    );
-
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
+      await windowManager.setMaximizable(false);
+      await windowManager.setResizable(false);
     });
   }
 
   @override
   void dispose() {
+    windowManager.close();
     super.dispose();
   }
-
-  void centerWindow() {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Stack(
           children: [
             Align(
-                alignment: const AlignmentDirectional(1, 0),
+                alignment: const AlignmentDirectional(1.5, 0),
                 child: Opacity(
                   opacity: 0.4,
                   child: Image.asset(
                     'lib/image_assets/login_background_image2.jpg',
                     alignment: Alignment.centerRight,
+                    filterQuality: FilterQuality.high,
+                    isAntiAlias: true,
                   ),
                 )),
             /* Center(
@@ -210,7 +216,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   opacity: 0.7,
                   child: ElevatedButton(
                     onPressed: () {
-                      print('Go to register page.');
+                      Navigator.of(context).push(PageAnimationTransition(
+                          page: const RegisterScreen(),
+                          pageAnimationType: RightToLeftFadedTransition()));
                     },
                     style: ElevatedButton.styleFrom(
                         fixedSize: const Size(250, 120),
@@ -227,9 +235,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Register'),
-                        Icon(
-                          Icons.app_registration_outlined,
-                          size: 50,
+                        SizedBox(
+                          width: 15,
+                        ),
+                        ImageIcon(
+                          AssetImage('lib/image_assets/register_png.png'),
+                          size: 35,
                         )
                       ],
                     ),
