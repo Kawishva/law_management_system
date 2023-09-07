@@ -1,9 +1,10 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:law_management_system/screens/login_screen.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
-
 import '../components/text_input_component.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -15,7 +16,10 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final userName = TextEditingController();
-  final userPassword = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  final confirmPassword = TextEditingController();
+  File? userImage;
 
   WindowOptions windowOptions = const WindowOptions(
       size: Size(960, 640), minimumSize: Size(800, 600), title: 'LMS');
@@ -135,9 +139,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Align(
                           alignment: const AlignmentDirectional(-0.85, 0),
                           child: TextInputComponent(
-                              controller: userPassword,
+                              controller: email,
                               hintText: '',
-                              obscureText: true,
+                              obscureText: false,
                               textInputType: TextInputType.text),
                         ),
                         const SizedBox(
@@ -158,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Align(
                           alignment: const AlignmentDirectional(-0.85, 0),
                           child: TextInputComponent(
-                              controller: userPassword,
+                              controller: password,
                               hintText: '',
                               obscureText: true,
                               textInputType: TextInputType.text),
@@ -181,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Align(
                           alignment: const AlignmentDirectional(-0.85, 0),
                           child: TextInputComponent(
-                              controller: userPassword,
+                              controller: confirmPassword,
                               hintText: '',
                               obscureText: true,
                               textInputType: TextInputType.text),
@@ -196,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               print('Name : ' +
                                   userName.text +
                                   ' \n Password :' +
-                                  userPassword.text);
+                                  password.text);
                             },
                             style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(230, 40),
@@ -276,21 +280,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.only(top: 100),
                 child: Column(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       backgroundColor: Colors.transparent,
                       radius: 60,
-                      backgroundImage:
-                          AssetImage('lib/image_assets/userDp.png'),
+                      backgroundImage: userImage == null
+                          ? AssetImage('lib/image_assets/userDp.png')
+                          : Image.file(userImage!).image,
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print('Name : ' +
-                            userName.text +
-                            ' \n Password :' +
-                            userPassword.text);
+                        userImagePickFunction();
                       },
                       style: ElevatedButton.styleFrom(
                           fixedSize: const Size(100, 30),
@@ -321,5 +323,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ],
         )));
+  }
+
+  Future<void> userImagePickFunction() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png'],
+        allowMultiple: false,
+        allowCompression: false);
+
+    if (result != null) {
+      // Convert the FilePickerResult object to a File object.
+      File file = File(result.files.single.path as String);
+      setState(() {
+        userImage = file;
+      });
+    } else {
+      // User canceled the picker
+      return;
+    }
   }
 }
