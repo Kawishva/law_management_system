@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:law_management_system/components/text_input_component.dart';
+import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/user.dart';
+import '../components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
-import 'package:window_manager/window_manager.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Isar isarDBInstance;
+
+  LoginScreen({super.key, required this.isarDBInstance});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,28 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final userName = TextEditingController();
   final userPassword = TextEditingController();
 
-  WindowOptions windowOptions = const WindowOptions(
-      size: Size(960, 640),
-      minimumSize: Size(800, 600),
-      center: true,
-      title: 'LMS');
-
   @override
   void initState() {
     super.initState();
-    windowManager.ensureInitialized();
-
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-      await windowManager.setMaximizable(false);
-      await windowManager.setResizable(false);
-    });
   }
 
   @override
   void dispose() {
-    windowManager.close();
     super.dispose();
   }
 
@@ -48,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: SafeArea(
             child: Stack(
           children: [
+            //background image
             Align(
                 alignment: const AlignmentDirectional(1, 0),
                 child: Opacity(
@@ -59,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     isAntiAlias: true,
                   ),
                 )),
+            //background image
+
+            //middle white box
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -74,9 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        /* const SizedBox(
-                          height: 100,
-                        ),*/
                         const Text(
                           'LOGIN',
                           style: TextStyle(
@@ -150,10 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            print('Name : ' +
-                                userName.text +
-                                ' \n Password :' +
-                                userPassword.text);
+                            signingFunction(widget.isarDBInstance);
                           },
                           style: ElevatedButton.styleFrom(
                               fixedSize: const Size(230, 40),
@@ -183,6 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            //middle white box
+
+            //middle register page button
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
@@ -192,7 +181,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(PageAnimationTransition(
-                          page: const RegisterScreen(),
+                          page: RegisterScreen(
+                            isarDBInstance: widget.isarDBInstance,
+                          ),
                           pageAnimationType: RightToLeftFadedTransition()));
                     },
                     style: ElevatedButton.styleFrom(
@@ -223,7 +214,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            //middle register page button
           ],
         )));
+  }
+
+  Future<void> signingFunction(Isar isar) async {
+    final user = await isar.users
+        .filter()
+        .nameEqualTo(userName.text)
+        .passwordEqualTo(userPassword.text);
+
+    if (await user.isNotEmpty()) {
+      // Authentication successful
+      Navigator.of(context).push(PageAnimationTransition(
+          page: RegisterScreen(
+            isarDBInstance: widget.isarDBInstance,
+          ),
+          pageAnimationType: RightToLeftFadedTransition()));
+    } else {
+      // Authentication failed
+      // Display an error message.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Invalid credentials'),
+      ));
+    }
   }
 }

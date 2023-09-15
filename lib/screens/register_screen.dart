@@ -1,14 +1,18 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:law_management_system/screens/login_screen.dart';
+import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/user.dart';
+import 'login_screen.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
-import 'package:window_manager/window_manager.dart';
 import '../components/text_input_component.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final Isar isarDBInstance;
+
+  RegisterScreen({super.key, required this.isarDBInstance});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -21,24 +25,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPassword = TextEditingController();
   File? userImage;
 
-  WindowOptions windowOptions = const WindowOptions(
-      size: Size(960, 640), minimumSize: Size(800, 600), title: 'LMS');
-
   @override
   void initState() {
     super.initState();
-    windowManager.ensureInitialized();
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-      await windowManager.setMaximizable(false);
-      await windowManager.setResizable(false);
-    });
   }
 
   @override
   void dispose() {
-    windowManager.close();
     super.dispose();
   }
 
@@ -197,10 +190,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           alignment: const AlignmentDirectional(-0.85, 0),
                           child: ElevatedButton(
                             onPressed: () {
-                              print('Name : ' +
-                                  userName.text +
-                                  ' \n Password :' +
-                                  password.text);
+                              newUserRegistration(widget.isarDBInstance);
+                              userName.clear();
+                              email.clear();
+                              password.clear();
                             },
                             style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(230, 40),
@@ -250,7 +243,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onPressed: () {
                                   Navigator.of(context).push(
                                       PageAnimationTransition(
-                                          page: const LoginScreen(),
+                                          page: LoginScreen(
+                                            isarDBInstance:
+                                                widget.isarDBInstance,
+                                          ),
                                           pageAnimationType:
                                               LeftToRightFadedTransition()));
                                 },
@@ -306,7 +302,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Register'),
+                          Text('Upload'),
                           SizedBox(
                             width: 4,
                           ),
@@ -334,7 +330,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (result != null) {
       // Convert the FilePickerResult object to a File object.
+      // Uint8List? fileBytes = result.files.single.bytes;
       File file = File(result.files.single.path as String);
+
       setState(() {
         userImage = file;
       });
@@ -342,5 +340,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // User canceled the picker
       return;
     }
+  }
+
+  Future<void> newUserRegistration(Isar isar) async {
+    final newUser = User()
+      ..name = userName.text
+      ..email = email.text
+      ..password = password.text;
+
+    await isar.writeTxn(() async {
+      await isar.users.put(newUser);
+    });
   }
 }
