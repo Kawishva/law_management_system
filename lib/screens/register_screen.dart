@@ -1,9 +1,9 @@
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
+import 'dart:typed_data';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:law_management_system/isar_DB/entities/user.dart';
+import '../isar_DB/entities/userSchema.dart';
 import 'login_screen.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
@@ -20,10 +20,23 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final userName = TextEditingController();
-  final email = TextEditingController();
+  final passwordHint = TextEditingController();
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
   File? userImage;
+  Uint8List? imageBytesUnit8List;
+  String? dropDownValue;
+
+  List<String> questionList = [
+    'pikachu',
+    'charmander',
+    'squirtle',
+    'bullbasaur',
+    'snorlax',
+    'mankey',
+    'psyduck',
+    'meowth'
+  ];
 
   @override
   void initState() {
@@ -43,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Stack(
           children: [
             Align(
-                alignment: const AlignmentDirectional(-1, 0),
+                alignment: const AlignmentDirectional(-1.4, 0),
                 child: Opacity(
                   opacity: 0.4,
                   child: Image.asset(
@@ -56,11 +69,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.only(top: 30, bottom: 30),
+                padding: const EdgeInsets.only(top: 40, bottom: 40),
                 child: Expanded(
+                  flex: 1,
                   child: Container(
                     margin: const EdgeInsets.only(right: 30),
-                    width: 500,
+                    width: 600,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
@@ -120,29 +134,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Align(
                           alignment: AlignmentDirectional(-0.9, 0),
                           child: Text(
-                            'Email',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Aoboshi One',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.85, 0),
-                          child: TextInputComponent(
-                              controller: email,
-                              hintText: '',
-                              obscureText: false,
-                              textInputType: TextInputType.text),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Align(
-                          alignment: AlignmentDirectional(-0.9, 0),
-                          child: Text(
                             'Password',
                             style: TextStyle(
                               color: Colors.black,
@@ -190,10 +181,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           alignment: const AlignmentDirectional(-0.85, 0),
                           child: ElevatedButton(
                             onPressed: () {
-                              newUserRegistration(widget.isarDBInstance);
+                              newUserRegistration(
+                                  widget.isarDBInstance, imageBytesUnit8List!);
                               userName.clear();
-                              email.clear();
+                              confirmPassword.clear();
+                              passwordHint.clear();
+
                               password.clear();
+                              setState(() {
+                                userImage = null;
+                                dropDownValue = null;
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(230, 40),
@@ -317,24 +315,111 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            Align(
+              alignment: AlignmentDirectional(0.86, -0.7),
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      userImage = null;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(30, 30),
+                      elevation: 10,
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.white,
+                      textStyle: const TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.bold)),
+                  child: Icon(
+                    Icons.delete,
+                    color: Color(0xFF940606),
+                    size: 25,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 590, bottom: 210),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Passwor Rest Hint',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: 'Aoboshi One',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    width: 300,
+                    height: 35,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Color(0xFF7D7D7D)),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: DropdownButton<String>(
+                      value: dropDownValue != null
+                          ? dropDownValue
+                          : questionList.first,
+                      focusColor: Colors.amber,
+                      dropdownColor: Colors.white,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600),
+                      underline: SizedBox(),
+                      isExpanded: true,
+                      icon: Icon(
+                        Icons.question_answer_sharp,
+                        size: 20,
+                      ),
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropDownValue = newValue;
+                        });
+                      },
+                      items: questionList.map((valueItem) {
+                        return DropdownMenuItem(
+                            value: valueItem, child: Text(valueItem));
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextInputComponent(
+                      controller: passwordHint,
+                      hintText: '',
+                      obscureText: false,
+                      textInputType: TextInputType.text),
+                ],
+              ),
+            ),
           ],
         )));
   }
 
   Future<void> userImagePickFunction() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'png'],
-        allowMultiple: false,
-        allowCompression: false);
+    const XTypeGroup typeGroup = XTypeGroup(
+      label: 'jpg,png',
+      extensions: <String>['jpg', 'png'],
+    );
+    final XFile? fileImage = await openFile(
+      acceptedTypeGroups: <XTypeGroup>[typeGroup],
+    );
 
-    if (result != null) {
+    if (fileImage != null) {
       // Convert the FilePickerResult object to a File object.
       // Uint8List? fileBytes = result.files.single.bytes;
-      File file = File(result.files.single.path as String);
+      File file = File(fileImage.path);
+      Uint8List imageBytes = await file.readAsBytes();
 
       setState(() {
         userImage = file;
+        imageBytesUnit8List = imageBytes;
       });
     } else {
       // User canceled the picker
@@ -342,14 +427,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<void> newUserRegistration(Isar isar) async {
-    final newUser = User()
+  void validationFunction() {}
+
+  Future<void> newUserRegistration(
+      Isar isar, Uint8List imageIntByteList) async {
+    List<int> byteList =
+        imageBytesUnit8List!.toList().map((value) => value & 0xFF).toList();
+
+    final newUser = UsersClass()
       ..name = userName.text
-      ..email = email.text
-      ..password = password.text;
+      ..password = password.text
+      ..question = dropDownValue == null ? questionList.first : dropDownValue
+      ..passwordRestHint = passwordHint.text
+      ..imageBytes = byteList;
 
     await isar.writeTxn(() async {
-      await isar.users.put(newUser);
+      await isar.usersClass.put(newUser);
     });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:law_management_system/isar_DB/entities/user.dart';
+import 'package:law_management_system/isar_DB/entities/userSchema.dart';
+
 import '../components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
@@ -56,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 30),
                 child: Expanded(
+                  flex: 1,
                   child: Container(
                     margin: const EdgeInsets.only(left: 40),
                     width: 340,
@@ -220,18 +222,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signingFunction(Isar isar) async {
-    final user = await isar.users
+    final user = await isar.usersClass
         .filter()
         .nameEqualTo(userName.text)
-        .passwordEqualTo(userPassword.text);
+        .and()
+        .passwordEqualTo(userPassword.text)
+        .findFirst();
 
-    if (await user.isNotEmpty()) {
+    if (await user != null) {
       // Authentication successful
       Navigator.of(context).push(PageAnimationTransition(
           page: RegisterScreen(
             isarDBInstance: widget.isarDBInstance,
           ),
           pageAnimationType: RightToLeftFadedTransition()));
+      /* setState(() {
+        imageFile = Uint8List.fromList(user!.imageBytes!);
+      });*/
     } else {
       // Authentication failed
       // Display an error message.
