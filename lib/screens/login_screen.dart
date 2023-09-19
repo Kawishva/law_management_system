@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
-
+import 'package:law_management_system/screens/home_screen.dart';
 import '../components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
@@ -232,7 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (await user != null) {
       // Authentication successful
       Navigator.of(context).push(PageAnimationTransition(
-          page: RegisterScreen(
+          page: HoomeScreen(
+            userID: user!.id,
             isarDBInstance: widget.isarDBInstance,
           ),
           pageAnimationType: RightToLeftFadedTransition()));
@@ -240,8 +241,6 @@ class _LoginScreenState extends State<LoginScreen> {
         imageFile = Uint8List.fromList(user!.imageBytes!);
       });*/
     } else {
-      // Authentication failed
-      // Display an error message.
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Invalid credentials'),
       ));

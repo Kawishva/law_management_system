@@ -24,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
   File? userImage;
-  Uint8List? imageBytesUnit8List;
+  Uint8List imageBytesUnit8List = Uint8List(0);
   String? dropDownValue;
 
   List<String> questionList = [
@@ -182,16 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               newUserRegistration(
-                                  widget.isarDBInstance, imageBytesUnit8List!);
-                              userName.clear();
-                              confirmPassword.clear();
-                              passwordHint.clear();
-
-                              password.clear();
-                              setState(() {
-                                userImage = null;
-                                dropDownValue = null;
-                              });
+                                  widget.isarDBInstance, imageBytesUnit8List);
                             },
                             style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(230, 40),
@@ -427,22 +418,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void validationFunction() {}
-
   Future<void> newUserRegistration(
       Isar isar, Uint8List imageIntByteList) async {
     List<int> byteList =
-        imageBytesUnit8List!.toList().map((value) => value & 0xFF).toList();
+        imageBytesUnit8List.toList().map((value) => value & 0xFF).toList();
 
-    final newUser = UsersClass()
-      ..name = userName.text
-      ..password = password.text
-      ..question = dropDownValue == null ? questionList.first : dropDownValue
-      ..passwordRestHint = passwordHint.text
-      ..imageBytes = byteList;
+    final user = await isar.usersClass
+        .filter()
+        .nameEqualTo(userName.text)
+        .and()
+        .passwordEqualTo(password.text)
+        .findFirst();
 
-    await isar.writeTxn(() async {
-      await isar.usersClass.put(newUser);
-    });
+    if (password.text != confirmPassword.text) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("User password doesn't match."),
+      ));
+      password.clear();
+      confirmPassword.clear();
+    } else if (await user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User has already registered.'),
+      ));
+      userName.clear();
+      confirmPassword.clear();
+      password.clear();
+    } else if (userName.text.isEmpty && password.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User name is not entered.'),
+      ));
+    } else if (password.text.isEmpty && userName.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User password is not entered.'),
+      ));
+    } else if (userName.text.isEmpty && password.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User name and password is not entered.'),
+      ));
+    } else if (confirmPassword.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Confirm password is not entered.'),
+      ));
+    } else if (passwordHint.text.isEmpty &&
+        userName.text.isNotEmpty &&
+        password.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Password reset hint was not set.'),
+      ));
+    } else {
+      final newUser = UsersClass()
+        ..name = userName.text
+        ..password = password.text
+        ..question = dropDownValue == null ? questionList.first : dropDownValue
+        ..passwordRestHint = passwordHint.text
+        ..imageBytes = byteList;
+
+      await isar.writeTxn(() async {
+        await isar.usersClass.put(newUser);
+      });
+
+      userName.clear();
+      confirmPassword.clear();
+      passwordHint.clear();
+      password.clear();
+      setState(() {
+        userImage = null;
+        dropDownValue = null;
+        imageBytesUnit8List = Uint8List(0);
+      });
+    }
   }
 }

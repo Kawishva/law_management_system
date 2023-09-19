@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
+  anydrawer:
+    dependency: "direct main"
+    description:
+      name: anydrawer
+      sha256: "4132bd83f8d3b8cb076793eab1734555d0096b40209571121815fff8f592e69e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   archive:
     dependency: transitive
     description:
