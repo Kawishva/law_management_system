@@ -471,6 +471,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ..password = password.text
         ..question = dropDownValue == null ? questionList.first : dropDownValue
         ..passwordRestHint = passwordHint.text
+        ..darkmode = false
         ..imageBytes = byteList;
 
       await isar.writeTxn(() async {

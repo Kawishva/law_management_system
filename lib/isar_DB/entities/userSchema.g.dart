@@ -17,28 +17,33 @@ const UsersClassSchema = CollectionSchema(
   name: r'UsersClass',
   id: 166473604984715082,
   properties: {
-    r'imageBytes': PropertySchema(
+    r'darkmode': PropertySchema(
       id: 0,
+      name: r'darkmode',
+      type: IsarType.bool,
+    ),
+    r'imageBytes': PropertySchema(
+      id: 1,
       name: r'imageBytes',
       type: IsarType.longList,
     ),
     r'name': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'password',
       type: IsarType.string,
     ),
     r'passwordRestHint': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'passwordRestHint',
       type: IsarType.string,
     ),
     r'question': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'question',
       type: IsarType.string,
     )
@@ -102,11 +107,12 @@ void _usersClassSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLongList(offsets[0], object.imageBytes);
-  writer.writeString(offsets[1], object.name);
-  writer.writeString(offsets[2], object.password);
-  writer.writeString(offsets[3], object.passwordRestHint);
-  writer.writeString(offsets[4], object.question);
+  writer.writeBool(offsets[0], object.darkmode);
+  writer.writeLongList(offsets[1], object.imageBytes);
+  writer.writeString(offsets[2], object.name);
+  writer.writeString(offsets[3], object.password);
+  writer.writeString(offsets[4], object.passwordRestHint);
+  writer.writeString(offsets[5], object.question);
 }
 
 UsersClass _usersClassDeserialize(
@@ -116,12 +122,13 @@ UsersClass _usersClassDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = UsersClass();
+  object.darkmode = reader.readBoolOrNull(offsets[0]);
   object.id = id;
-  object.imageBytes = reader.readLongList(offsets[0]);
-  object.name = reader.readStringOrNull(offsets[1]);
-  object.password = reader.readStringOrNull(offsets[2]);
-  object.passwordRestHint = reader.readStringOrNull(offsets[3]);
-  object.question = reader.readStringOrNull(offsets[4]);
+  object.imageBytes = reader.readLongList(offsets[1]);
+  object.name = reader.readStringOrNull(offsets[2]);
+  object.password = reader.readStringOrNull(offsets[3]);
+  object.passwordRestHint = reader.readStringOrNull(offsets[4]);
+  object.question = reader.readStringOrNull(offsets[5]);
   return object;
 }
 
@@ -133,14 +140,16 @@ P _usersClassDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongList(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongList(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -238,6 +247,33 @@ extension UsersClassQueryWhere
 
 extension UsersClassQueryFilter
     on QueryBuilder<UsersClass, UsersClass, QFilterCondition> {
+  QueryBuilder<UsersClass, UsersClass, QAfterFilterCondition> darkmodeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'darkmode',
+      ));
+    });
+  }
+
+  QueryBuilder<UsersClass, UsersClass, QAfterFilterCondition>
+      darkmodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'darkmode',
+      ));
+    });
+  }
+
+  QueryBuilder<UsersClass, UsersClass, QAfterFilterCondition> darkmodeEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'darkmode',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<UsersClass, UsersClass, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -1065,6 +1101,18 @@ extension UsersClassQueryLinks
 
 extension UsersClassQuerySortBy
     on QueryBuilder<UsersClass, UsersClass, QSortBy> {
+  QueryBuilder<UsersClass, UsersClass, QAfterSortBy> sortByDarkmode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'darkmode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UsersClass, UsersClass, QAfterSortBy> sortByDarkmodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'darkmode', Sort.desc);
+    });
+  }
+
   QueryBuilder<UsersClass, UsersClass, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1117,6 +1165,18 @@ extension UsersClassQuerySortBy
 
 extension UsersClassQuerySortThenBy
     on QueryBuilder<UsersClass, UsersClass, QSortThenBy> {
+  QueryBuilder<UsersClass, UsersClass, QAfterSortBy> thenByDarkmode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'darkmode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UsersClass, UsersClass, QAfterSortBy> thenByDarkmodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'darkmode', Sort.desc);
+    });
+  }
+
   QueryBuilder<UsersClass, UsersClass, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1181,6 +1241,12 @@ extension UsersClassQuerySortThenBy
 
 extension UsersClassQueryWhereDistinct
     on QueryBuilder<UsersClass, UsersClass, QDistinct> {
+  QueryBuilder<UsersClass, UsersClass, QDistinct> distinctByDarkmode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'darkmode');
+    });
+  }
+
   QueryBuilder<UsersClass, UsersClass, QDistinct> distinctByImageBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'imageBytes');
@@ -1222,6 +1288,12 @@ extension UsersClassQueryProperty
   QueryBuilder<UsersClass, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<UsersClass, bool?, QQueryOperations> darkmodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'darkmode');
     });
   }
 

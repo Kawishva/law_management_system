@@ -17,11 +17,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
-  anydrawer:
+  animated_icon_button:
     dependency: "direct main"
     description:
-      name: anydrawer
-      sha256: "4132bd83f8d3b8cb076793eab1734555d0096b40209571121815fff8f592e69e"
+      name: animated_icon_button
+      sha256: a483ca86d56fe358f4913ba79be8f0bd8fca3282de06f1ae3df108aece5b2a04
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
@@ -221,10 +221,10 @@ packages:
     dependency: transitive
     description:
       name: file
-      sha256: "5fc22d7c25582e38ad9a8515372cd9a93834027aacf1801cf01164dac0ffa08c"
+      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "6.1.4"
   file_selector:
     dependency: "direct main"
     description:
@@ -307,6 +307,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttericon:
+    dependency: "direct main"
+    description:
+      name: fluttericon
+      sha256: "252fa8043826e93d972a602497a260cb3d62b5aea6d045793e4381590f2c1e99"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   frontend_server_client:
     dependency: transitive
     description:

@@ -9,5 +9,6 @@ class UsersClass {
   late String? password;
   late String? question;
   late String? passwordRestHint;
+  late bool? darkmode;
   List<int>? imageBytes;
 }

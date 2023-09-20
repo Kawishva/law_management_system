@@ -27,6 +27,7 @@ void main() async {
     await windowManager.focus();
     await windowManager.setMaximizable(false);
     await windowManager.setResizable(false);
+    await windowManager.center();
   });
 
   runApp(MyApp(

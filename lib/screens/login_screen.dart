@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
 import 'package:law_management_system/screens/home_screen.dart';
+import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import '../components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
@@ -222,27 +223,45 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signingFunction(Isar isar) async {
-    final user = await isar.usersClass
-        .filter()
-        .nameEqualTo(userName.text)
-        .and()
-        .passwordEqualTo(userPassword.text)
-        .findFirst();
+    final user =
+        await isar.usersClass.filter().nameEqualTo(userName.text).findFirst();
 
-    if (await user != null) {
+    if (await user == null &&
+        userName.text.isNotEmpty &&
+        userPassword.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User is not found.'),
+      ));
+    } else if (userName.text.isEmpty && userPassword.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User Name is not entered.'),
+      ));
+    } else if (userPassword.text.isEmpty && userName.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User Password is not entered.'),
+      ));
+    } else if (userName.text.isEmpty && userPassword.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User Name and Password are empty.'),
+      ));
+    } else if (userName.text.isNotEmpty &&
+        userPassword.text.isNotEmpty &&
+        await user != null &&
+        user!.password != userPassword.text) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Wrong Password.'),
+      ));
+    } else if (await user != null && user!.password == userPassword.text) {
       // Authentication successful
       Navigator.of(context).push(PageAnimationTransition(
           page: HoomeScreen(
-            userID: user!.id,
+            user: user,
             isarDBInstance: widget.isarDBInstance,
           ),
-          pageAnimationType: RightToLeftFadedTransition()));
-      /* setState(() {
-        imageFile = Uint8List.fromList(user!.imageBytes!);
-      });*/
-    } else {
+          pageAnimationType: FadeAnimationTransition()));
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Invalid credentials'),
+        content: Text('Loggin Successfull.'),
       ));
     }
   }

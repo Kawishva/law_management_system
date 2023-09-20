@@ -43,7 +43,11 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   isar_generator: ^3.1.0+1
-  anydrawer: ^1.0.2
+  animated_icon_button: ^1.0.2
+  fluttericon: ^2.0.0
+
+
+  
  
 
  
