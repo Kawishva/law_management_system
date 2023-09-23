@@ -70,191 +70,186 @@ class _RegisterScreenState extends State<RegisterScreen> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(top: 40, bottom: 40),
-                child: Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 30),
-                    width: 600,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Align(
-                          alignment: AlignmentDirectional(-0.9, 0),
-                          child: Text(
-                            'REGISTER',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 30,
-                              fontFamily: 'Aoboshi One',
-                              fontWeight: FontWeight.bold,
-                            ),
+                child: Container(
+                  margin: const EdgeInsets.only(right: 30),
+                  width: 600,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Align(
+                        alignment: AlignmentDirectional(-0.9, 0),
+                        child: Text(
+                          'REGISTER',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontFamily: 'Aoboshi One',
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.9, 0),
-                          child: Container(
-                            width: 80,
-                            height: 5,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: const Color(0xFF160694)),
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.9, 0),
+                        child: Container(
+                          width: 80,
+                          height: 5,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color(0xFF160694)),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const Align(
+                        alignment: AlignmentDirectional(-0.9, 0),
+                        child: Text(
+                          'Name',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Aoboshi One',
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        const Align(
-                          alignment: AlignmentDirectional(-0.9, 0),
-                          child: Text(
-                            'Name',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Aoboshi One',
-                              fontWeight: FontWeight.w600,
-                            ),
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.85, 0),
+                        child: TextInputComponent(
+                            controller: userName,
+                            hintText: '',
+                            obscureText: false,
+                            textInputType: TextInputType.text),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Align(
+                        alignment: AlignmentDirectional(-0.9, 0),
+                        child: Text(
+                          'Password',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Aoboshi One',
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.85, 0),
-                          child: TextInputComponent(
-                              controller: userName,
-                              hintText: '',
-                              obscureText: false,
-                              textInputType: TextInputType.text),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Align(
-                          alignment: AlignmentDirectional(-0.9, 0),
-                          child: Text(
-                            'Password',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Aoboshi One',
-                              fontWeight: FontWeight.w600,
-                            ),
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.85, 0),
+                        child: TextInputComponent(
+                            controller: password,
+                            hintText: '',
+                            obscureText: true,
+                            textInputType: TextInputType.text),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Align(
+                        alignment: AlignmentDirectional(-0.9, 0),
+                        child: Text(
+                          'Confirm Password',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Aoboshi One',
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.85, 0),
-                          child: TextInputComponent(
-                              controller: password,
-                              hintText: '',
-                              obscureText: true,
-                              textInputType: TextInputType.text),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Align(
-                          alignment: AlignmentDirectional(-0.9, 0),
-                          child: Text(
-                            'Confirm Password',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Aoboshi One',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.85, 0),
-                          child: TextInputComponent(
-                              controller: confirmPassword,
-                              hintText: '',
-                              obscureText: true,
-                              textInputType: TextInputType.text),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Align(
-                          alignment: const AlignmentDirectional(-0.85, 0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              newUserRegistration(
-                                  widget.isarDBInstance, imageBytesUnit8List);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(230, 40),
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                backgroundColor: const Color(0xFF160694),
-                                textStyle: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold)),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                    padding: EdgeInsets.only(left: 70),
-                                    child: Text('Register')),
-                                SizedBox(
-                                  width: 50,
-                                ),
-                                ImageIcon(
-                                  AssetImage(
-                                      'lib/image_assets/register_png.png'),
-                                  size: 20,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.85, 0),
+                        child: TextInputComponent(
+                            controller: confirmPassword,
+                            hintText: '',
+                            obscureText: true,
+                            textInputType: TextInputType.text),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.85, 0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            newUserRegistration(
+                                widget.isarDBInstance, imageBytesUnit8List);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(230, 40),
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: const Color(0xFF160694),
+                              textStyle: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'If you already have an account',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.black.withOpacity(0.7)),
+                              Padding(
+                                  padding: EdgeInsets.only(left: 70),
+                                  child: Text('Register')),
+                              SizedBox(
+                                width: 50,
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                      PageAnimationTransition(
-                                          page: LoginScreen(
-                                            isarDBInstance:
-                                                widget.isarDBInstance,
-                                          ),
-                                          pageAnimationType:
-                                              LeftToRightFadedTransition()));
-                                },
-                                child: const Text(
-                                  'Sign in',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFF160694)),
-                                ),
-                              ),
+                              ImageIcon(
+                                AssetImage('lib/image_assets/register_png.png'),
+                                size: 20,
+                              )
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              'If you already have an account',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.black.withOpacity(0.7)),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                    PageAnimationTransition(
+                                        page: LoginScreen(
+                                          isarDBInstance: widget.isarDBInstance,
+                                        ),
+                                        pageAnimationType:
+                                            LeftToRightFadedTransition()));
+                              },
+                              child: const Text(
+                                'Sign in',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic,
+                                    color: Color(0xFF160694)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

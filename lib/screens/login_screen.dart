@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
 import 'package:law_management_system/screens/home_screen.dart';
 import 'package:page_animation_transition/animations/fade_animation_transition.dart';
+import 'package:window_manager/window_manager.dart';
 import '../components/text_input_component.dart';
 import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
@@ -24,6 +25,23 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeWindow();
+  }
+
+  void _initializeWindow() async {
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(960, 640),
+      minimumSize: Size(800, 600),
+    );
+
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+      await windowManager.setMaximizable(false);
+      await windowManager.setResizable(false);
+    });
   }
 
   @override
@@ -57,117 +75,114 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 30),
-                child: Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 40),
-                    width: 340,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'LOGIN',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 40,
-                            fontFamily: 'Aoboshi One',
-                            fontWeight: FontWeight.bold,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 40),
+                  width: 340,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'LOGIN',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 40,
+                          fontFamily: 'Aoboshi One',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 25,
+                            height: 7,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: const Color(0xFFBC1307)),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 15),
+                            width: 70,
+                            height: 7,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: const Color(0xFFBC1307)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      TextInputComponent(
+                          controller: userName,
+                          hintText: 'Enter User Name',
+                          obscureText: false,
+                          textInputType: TextInputType.text),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextInputComponent(
+                          controller: userPassword,
+                          hintText: 'Enter Password',
+                          obscureText: true,
+                          textInputType: TextInputType.text),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          print('Forgot Password');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 135),
+                          child: Text(
+                            'Forgot Password ?',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                         ),
-                        Row(
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          signingFunction(widget.isarDBInstance);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(230, 40),
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            backgroundColor: const Color(0xFFBC1307),
+                            textStyle: const TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold)),
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              width: 25,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color(0xFFBC1307)),
+                            Padding(
+                                padding: EdgeInsets.only(left: 80),
+                                child: Text('Login')),
+                            SizedBox(
+                              width: 60,
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 15),
-                              width: 70,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color(0xFFBC1307)),
-                            ),
+                            Icon(Icons.login_rounded)
                           ],
                         ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        TextInputComponent(
-                            controller: userName,
-                            hintText: 'Enter User Name',
-                            obscureText: false,
-                            textInputType: TextInputType.text),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputComponent(
-                            controller: userPassword,
-                            hintText: 'Enter Password',
-                            obscureText: true,
-                            textInputType: TextInputType.text),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            print('Forgot Password');
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 135),
-                            child: Text(
-                              'Forgot Password ?',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black.withOpacity(0.7)),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            signingFunction(widget.isarDBInstance);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              fixedSize: const Size(230, 40),
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              backgroundColor: const Color(0xFFBC1307),
-                              textStyle: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold)),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                  padding: EdgeInsets.only(left: 80),
-                                  child: Text('Login')),
-                              SizedBox(
-                                width: 60,
-                              ),
-                              Icon(Icons.login_rounded)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
