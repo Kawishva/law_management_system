@@ -1,11 +1,17 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
+import 'package:fluttericon/typicons_icons.dart';
 import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/docFilesSchema.dart';
+import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
-import '../components/form.dart';
+import '../components/form_components/name&textfield.dart';
 import 'home_screen.dart';
 
 class FormScreen extends StatefulWidget {
@@ -29,6 +35,7 @@ class _FormScreenState extends State<FormScreen> {
   final caseNo = TextEditingController();
   final police = TextEditingController();
   final location = TextEditingController();
+  List<File> userFiles = [];
 
   @override
   void initState() {
@@ -107,13 +114,184 @@ class _FormScreenState extends State<FormScreen> {
             ),
             Center(
                 //form
-                child: FormFile(
-              darkMode: widget.darkMode,
-              width: width,
+                child: Container(
+              width: width / 2,
               height: height,
-              caseNo: caseNo,
-              police: police,
-              location: location,
+              decoration: BoxDecoration(
+                color:
+                    widget.darkMode == true ? Color(0xFFC9C9C9) : Colors.white,
+              ),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Form',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  NameAndTextField(
+                      controller: caseNo,
+                      darkMode: widget.darkMode,
+                      height: height / 30,
+                      width: width / 20,
+                      fontsize: height / 65,
+                      name: 'CaseNo :',
+                      padding: EdgeInsets.only(left: 5)),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  NameAndTextField(
+                      controller: police,
+                      darkMode: widget.darkMode,
+                      height: height / 30,
+                      width: width / 5,
+                      fontsize: height / 65,
+                      name: 'Police :',
+                      padding: EdgeInsets.only(left: 5)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  NameAndTextField(
+                      controller: location,
+                      darkMode: widget.darkMode,
+                      height: height / 30,
+                      width: width / 3,
+                      fontsize: height / 65,
+                      name: 'Location :',
+                      padding: EdgeInsets.only(left: 5)),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: width / 20, right: width / 20),
+                    child: Container(
+                      height: height / 3,
+                      decoration: BoxDecoration(
+                          color: widget.darkMode == true
+                              ? Color.fromARGB(255, 99, 99, 99).withOpacity(0.5)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: GridView.builder(
+                          primary: false,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount:
+                                6, // Adjust the number of columns as needed
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 5,
+                          ),
+                          itemCount: userFiles.length + 1,
+                          itemBuilder: (context, index) {
+                            return Stack(
+                              children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 0),
+                                    child: Container(
+                                      padding: EdgeInsets.all(1),
+                                      width: width / 20,
+                                      height: height / 10,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            index == 0
+                                                ? userFilePickFunction()
+                                                : print(index);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              alignment: Alignment.center,
+                                              side: BorderSide(
+                                                  width: 1.5,
+                                                  strokeAlign: BorderSide
+                                                      .strokeAlignOutside,
+                                                  color: widget.darkMode == true
+                                                      ? Colors.black
+                                                          .withOpacity(0.6)
+                                                      : Color(0xFF7D7D7D)),
+                                              padding: EdgeInsets.only(
+                                                  bottom: height / 60,
+                                                  right: width / 900),
+                                              elevation: 0,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                              foregroundColor: widget.darkMode == true
+                                                  ? Colors.black
+                                                  : Colors.grey,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10))),
+                                          child: index == 0
+                                              ? Icon(
+                                                  Icons.note_add_rounded,
+                                                  size: width / 20,
+                                                )
+                                              : Image.asset(
+                                                  'lib/image_assets/pdf.png')),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 2),
+                                    child: index == 0
+                                        ? null
+                                        : Container(
+                                            width: width / 65,
+                                            height: width / 65,
+                                            child: ElevatedButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    userFiles
+                                                        .removeAt(index - 1);
+                                                  });
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: height / 60,
+                                                        right: width / 1000),
+                                                    elevation: 2,
+                                                    backgroundColor:
+                                                        widget.darkMode == true
+                                                            ? Colors.blue
+                                                            : const Color(
+                                                                0xFF7D7D7D),
+                                                    foregroundColor:
+                                                        widget.darkMode == true
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50))),
+                                                child: Icon(
+                                                  Typicons.cancel_outline,
+                                                  size: width / 85,
+                                                )),
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
             )),
             Align(
               alignment: Alignment.bottomRight,
@@ -136,7 +314,9 @@ class _FormScreenState extends State<FormScreen> {
                         width: width / 25,
                         height: height / 25,
                         child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              addDetatilsFuntion(widget.isarDBInstance);
+                            },
                             style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.all(0),
                                 backgroundColor: widget.darkMode == true
@@ -160,9 +340,12 @@ class _FormScreenState extends State<FormScreen> {
                         height: height / 25,
                         child: ElevatedButton(
                             onPressed: () {
-                              caseNo.clear();
-                              police.clear();
-                              location.clear();
+                              setState(() {
+                                userFiles.clear();
+                                caseNo.clear();
+                                police.clear();
+                                location.clear();
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.all(0),
@@ -188,5 +371,73 @@ class _FormScreenState extends State<FormScreen> {
         );
       })),
     );
+  }
+
+  Future<void> userFilePickFunction() async {
+    const XTypeGroup jpgsTypeGroup = XTypeGroup(
+      label: 'JPEGs',
+      extensions: <String>['jpg', 'jpeg'],
+    );
+    const XTypeGroup pngTypeGroup = XTypeGroup(
+      label: 'PNGs',
+      extensions: <String>['png'],
+    );
+    const XTypeGroup pdfTypeGroup = XTypeGroup(
+      label: 'PDFs',
+      extensions: <String>['pdf'],
+    );
+    final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
+      jpgsTypeGroup,
+      pngTypeGroup,
+      pdfTypeGroup,
+    ]);
+
+    if (files != null) {
+      //Uint8List imageBytes = await file.readAsBytes();
+      setState(() {
+        for (int i = 0; i < files.length; i++) {
+          File filePath = File(files[i].path);
+          userFiles.add(filePath);
+        }
+        files.clear();
+      });
+    } else {
+      // User canceled the picker
+      return;
+    }
+  }
+
+  Future<void> addDetatilsFuntion(Isar isar) async {
+    List<List<int>> fileConvertedByteList = [];
+
+    for (int i = 0; i < userFiles.length; i++) {
+      Uint8List fileByte = await userFiles[i].readAsBytes();
+
+      List<int> byteList =
+          fileByte.toList().map((value) => value & 0xFF).toList();
+
+      fileConvertedByteList.add(byteList);
+    }
+
+    final newForm = FormsClass()
+      ..userID = widget.user!.id
+      ..caseNo = caseNo.text
+      ..police = police.text
+      ..location = location.text;
+
+    await isar.writeTxn(() async {
+      await isar.formsClass.put(newForm);
+    });
+
+    for (int j = 0; j < fileConvertedByteList.length; j++) {
+      final newdocFile = DocFIlesClass()
+        ..userID = widget.user!.id
+        ..caseNo = caseNo.text
+        ..documentBytes = fileConvertedByteList[j];
+
+      await isar.writeTxn(() async {
+        await isar.docFIlesClass.put(newdocFile);
+      });
+    }
   }
 }

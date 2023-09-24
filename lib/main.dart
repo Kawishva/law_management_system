@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/docFilesSchema.dart';
+import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
 import 'package:window_manager/window_manager.dart';
 import 'screens/login_screen.dart';
@@ -7,8 +9,9 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   final dir = await getApplicationSupportDirectory();
-  final isar =
-      await Isar.open([UsersClassSchema], directory: dir.path, inspector: true);
+  final isar = await Isar.open(
+      [UsersClassSchema, FormsClassSchema, DocFIlesClassSchema],
+      directory: dir.path, inspector: true);
 
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
