@@ -5,11 +5,13 @@ import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
+import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:animated_icon_button/animated_icon_button.dart';
 
+import 'form_screen.dart';
 import 'login_screen.dart';
 
 // ignore: must_be_immutable
@@ -17,7 +19,11 @@ class HoomeScreen extends StatefulWidget {
   final user;
   final Isar isarDBInstance;
 
-  HoomeScreen({super.key, required this.user, required this.isarDBInstance});
+  HoomeScreen({
+    super.key,
+    required this.user,
+    required this.isarDBInstance,
+  });
 
   @override
   State<HoomeScreen> createState() => _HoomeScreenState();
@@ -43,8 +49,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
   void _initializeWindow() async {
     await windowManager.ensureInitialized();
 
-    WindowOptions windowOptions = const WindowOptions(
-      size: Size(1280, 800),
+    WindowOptions windowOptions = WindowOptions(
       minimumSize: Size(800, 600),
     );
 
@@ -53,7 +58,6 @@ class _HoomeScreenState extends State<HoomeScreen> {
       await windowManager.focus();
       await windowManager.setMaximizable(true);
       await windowManager.setResizable(true);
-      await windowManager.center();
     });
   }
 
@@ -94,9 +98,33 @@ class _HoomeScreenState extends State<HoomeScreen> {
                     Container(
                       width: width / 4,
                       height: height,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 50, vertical: 200),
                       decoration: BoxDecoration(
                           color: Colors.purple,
                           borderRadius: BorderRadius.circular(15)),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(PageAnimationTransition(
+                              page: FormScreen(
+                                user: widget.user,
+                                isarDBInstance: widget.isarDBInstance,
+                                darkMode: darkMode!,
+                              ),
+                              pageAnimationType: FadeAnimationTransition()));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            elevation: 10,
+                            shadowColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: const BorderSide(
+                                    width: 3, color: Colors.white)),
+                            backgroundColor: const Color(0xFFBC1307),
+                            textStyle: const TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.bold)),
+                        child: Text('Form'),
+                      ),
                     ),
                   ],
                 ),
