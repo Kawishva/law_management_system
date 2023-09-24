@@ -10,7 +10,6 @@ import 'package:page_animation_transition/animations/left_to_right_faded_transit
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:animated_icon_button/animated_icon_button.dart';
-
 import 'form_screen.dart';
 import 'login_screen.dart';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
-
 import 'package:window_manager/window_manager.dart';
 import 'screens/login_screen.dart';
 import 'package:path_provider/path_provider.dart';

@@ -5,7 +5,6 @@ import 'package:isar/isar.dart';
 import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:window_manager/window_manager.dart';
-
 import '../components/form.dart';
 import 'home_screen.dart';
 
