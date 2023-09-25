@@ -1,75 +1,58 @@
-import 'dart:async';
 import 'dart:typed_data';
+import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
-import 'package:law_management_system/screens/formShow_screen.dart';
+import 'package:law_management_system/screens/home_screen.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
-import 'package:page_animation_transition/animations/right_to_left_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:animated_icon_button/animated_icon_button.dart';
 import '../components/form_components/name&textfield.dart';
-import 'form_screen.dart';
 import 'login_screen.dart';
 
-// ignore: must_be_immutable
-class HoomeScreen extends StatefulWidget {
+class FormShowScreen extends StatefulWidget {
   final user;
   final Isar isarDBInstance;
+  final String police;
 
-  HoomeScreen({
-    super.key,
-    required this.user,
-    required this.isarDBInstance,
-  });
+  FormShowScreen(
+      {super.key,
+      required this.isarDBInstance,
+      required this.user,
+      required this.police});
 
   @override
-  State<HoomeScreen> createState() => _HoomeScreenState();
+  State<FormShowScreen> createState() => _FormShowScreenState();
 }
 
-class _HoomeScreenState extends State<HoomeScreen> {
+class _FormShowScreenState extends State<FormShowScreen> {
   Uint8List? imageFile;
   bool? darkMode;
   Color? backgroundColor;
   final searchText = TextEditingController();
   List<String> formNameList = [];
+  String? policeName;
+  List<FormsClass> formList = [];
+  String caseNo = '', police = '', location = '';
   final contollor = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     dataReadFunctiond(widget.isarDBInstance);
-    _initializeWindow();
     setState(() {
       imageFile = Uint8List.fromList(widget.user.imageBytes!);
       darkMode = widget.user.darkmode!;
       backgroundColor = darkMode == false ? Colors.white : Colors.black;
-    });
-  }
-
-  void _initializeWindow() async {
-    await windowManager.ensureInitialized();
-
-    WindowOptions windowOptions = WindowOptions(
-      minimumSize: Size(800, 600),
-    );
-
-    await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-      await windowManager.setMaximizable(true);
-      await windowManager.setResizable(true);
+      policeName = widget.police;
     });
   }
 
   @override
   void dispose() {
     setState(() {
-      formNameList.clear();
       imageFile = null;
     });
     super.dispose();
@@ -126,17 +109,17 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                         height: height / 10,
                                         child: ElevatedButton(
                                             onPressed: () {
-                                              Navigator.of(context).push(
-                                                  PageAnimationTransition(
-                                                      page: FormShowScreen(
-                                                        isarDBInstance: widget
-                                                            .isarDBInstance,
-                                                        user: widget.user,
-                                                        police:
-                                                            formNameList[index],
-                                                      ),
-                                                      pageAnimationType:
-                                                          RightToLeftFadedTransition()));
+                                              setState(() {
+                                                caseNo = formList[index]
+                                                    .caseNo
+                                                    .toString();
+
+                                                location = formList[index]
+                                                    .location
+                                                    .toString();
+
+                                                police = widget.police;
+                                              });
                                             },
                                             style: ElevatedButton.styleFrom(
                                                 alignment: Alignment.center,
@@ -160,7 +143,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                                         BorderRadius.circular(
                                                             10))),
                                             child: Image.asset(
-                                                'lib/image_assets/folder.png')),
+                                                'lib/image_assets/doc.png')),
                                       ),
                                     ),
                                   ),
@@ -170,7 +153,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                       padding: const EdgeInsets.only(
                                           left: 1, right: 1),
                                       child: Text(
-                                        formNameList[index],
+                                        formList[index].caseNo.toString(),
                                         style: TextStyle(
                                             fontSize: width / 100,
                                             color: Colors.black,
@@ -187,24 +170,27 @@ class _HoomeScreenState extends State<HoomeScreen> {
                     SizedBox(
                       width: 5,
                     ),
-                    Container(
-                      width: width / 4,
-                      height: height,
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFCBCBCB).withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Stack(
-                        children: [
-                          Opacity(
-                            opacity: 0.5,
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: height / 15),
+                          child: Container(
+                            width: width / 2.2,
+                            height: height,
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25)),
                             child: Center(
                                 //form
                                 child: Container(
                               width: width / 2,
                               height: height,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15)),
+                                  color: darkMode == true
+                                      ? Color(0xFFC9C9C9)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(20)),
                               child: ListView(
                                 children: [
                                   SizedBox(
@@ -228,7 +214,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                       width: width / 20,
                                       fontsize: height / 65,
                                       name: 'CaseNo :',
-                                      text: '',
+                                      text: caseNo,
                                       padding: EdgeInsets.only(left: 5)),
                                   SizedBox(
                                     height: 15,
@@ -238,10 +224,10 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                       enable: false,
                                       darkMode: darkMode!,
                                       height: height / 30,
-                                      width: width / 10,
+                                      width: width / 5,
                                       fontsize: height / 65,
                                       name: 'Police :',
-                                      text: '',
+                                      text: police,
                                       padding: EdgeInsets.only(left: 5)),
                                   SizedBox(
                                     height: 5,
@@ -251,10 +237,10 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                       enable: false,
                                       darkMode: darkMode!,
                                       height: height / 30,
-                                      width: width / 10,
+                                      width: width / 3,
                                       fontsize: height / 65,
                                       name: 'Location :',
-                                      text: '',
+                                      text: location,
                                       padding: EdgeInsets.only(left: 5)),
                                   SizedBox(
                                     height: 20,
@@ -266,50 +252,52 @@ class _HoomeScreenState extends State<HoomeScreen> {
                               ),
                             )),
                           ),
-                          Center(
-                            child: Container(
-                              width: width / 10,
-                              height: height / 5,
-                              padding: EdgeInsets.only(),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white.withOpacity(0.5),
-                                  border: Border.all(
-                                      width: 1.5,
-                                      strokeAlign:
-                                          BorderSide.strokeAlignOutside,
-                                      color: darkMode == true
-                                          ? Colors.black.withOpacity(0.6)
-                                          : Color(0xFF7D7D7D))),
-                              child: IconButton(
-                                  onPressed: () {
-                                    /* Navigator.of(context).push(PageAnimationTransition(
-                                        page: FormScreen(
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: width / 3),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                /* Navigator.of(context).push(PageAnimationTransition(
+                                  page: FormScreen(
+                                    user: widget.user,
+                                    isarDBInstance: widget.isarDBInstance,
+                                    darkMode: darkMode!,
+                                  ),
+                                  pageAnimationType: FadeAnimationTransition()));*/
+
+                                /*   Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FormScreen(
                                           user: widget.user,
                                           isarDBInstance: widget.isarDBInstance,
                                           darkMode: darkMode!,
-                                        ),
-                                        pageAnimationType: FadeAnimationTransition()));*/
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FormScreen(
-                                                user: widget.user,
-                                                isarDBInstance:
-                                                    widget.isarDBInstance,
-                                                darkMode: darkMode!,
-                                              )),
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.note_add_rounded,
-                                    size: width / 20,
-                                  )),
+                                        )),
+                              );*/
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  elevation: 10,
+                                  fixedSize: Size(width / 15, height / 20),
+                                  shadowColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  backgroundColor: darkMode == true
+                                      ? Colors.blue
+                                      : const Color(0xFF7D7D7D),
+                                  foregroundColor: darkMode == true
+                                      ? Colors.black
+                                      : Colors.white,
+                                  textStyle: TextStyle(
+                                      fontSize: width / 90,
+                                      fontWeight: FontWeight.bold)),
+                              child: Text('Open'),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -318,28 +306,59 @@ class _HoomeScreenState extends State<HoomeScreen> {
             Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 35, left: 52),
+                  padding: EdgeInsets.only(top: 39.95, left: 108),
                   child: Container(
-                    padding: EdgeInsets.only(),
-                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(left: 5),
+                    alignment: Alignment.center,
                     width: 65,
-                    height: 20,
+                    height: 15,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(20),
                             bottomRight: Radius.circular(20))),
-                    child: Center(
-                      child: Text(
-                        '/Home',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500),
-                      ),
+                    child: Text(
+                      '$policeName',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
+                )),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 35, left: 52),
+                  child: Container(
+                      padding: EdgeInsets.only(),
+                      alignment: Alignment.centerRight,
+                      width: 65,
+                      height: 20,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20))),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(PageAnimationTransition(
+                              page: HoomeScreen(
+                                user: widget.user,
+                                isarDBInstance: widget.isarDBInstance,
+                              ),
+                              pageAnimationType: LeftToRightFadedTransition()));
+                        },
+                        child: Center(
+                          child: Text(
+                            '/Home /',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(color: Colors.black, fontSize: 11),
+                          ),
+                        ),
+                      )),
                 )),
             Align(
                 alignment: Alignment.topLeft,
@@ -631,27 +650,30 @@ class _HoomeScreenState extends State<HoomeScreen> {
   }
 
   Future<void> dataReadFunctiond(Isar isar) async {
-    final formsResult =
-        await isar.formsClass.filter().userIDEqualTo(widget.user.id).findAll();
+    final formsResult = await isar.formsClass
+        .filter()
+        .userIDEqualTo(widget.user.id)
+        .and()
+        .policeEqualTo(widget.police)
+        .findAll();
 
     if (await formsResult.isNotEmpty) {
       List<String> forSortNames = [];
 
       setState(() {
         for (int i = 0; i < formsResult.length; i++) {
-          forSortNames.add(formsResult[i].police.toString());
+          forSortNames.add(formsResult[i].caseNo.toString());
+          formList.add(formsResult[i]);
         }
         forSortNames.sort();
+        // formList.sort();
 
-        for (int j = 0; j < forSortNames.length - 1; j++) {
-          if (forSortNames[j] != forSortNames[j + 1]) {
-            formNameList.add(forSortNames[j]);
-          }
+        for (int j = 0; j < forSortNames.length; j++) {
+          formNameList.add(forSortNames[j]);
         }
-        // Add the last element since it won't be covered by the loop
-        formNameList.add(forSortNames[forSortNames.length - 1]);
       });
     }
-    print(formNameList);
+
+    print(formList.first.caseNo);
   }
 }

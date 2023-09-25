@@ -137,33 +137,39 @@ class _FormScreenState extends State<FormScreen> {
                   ),
                   NameAndTextField(
                       controller: caseNo,
+                      enable: true,
                       darkMode: widget.darkMode,
                       height: height / 30,
                       width: width / 20,
                       fontsize: height / 65,
                       name: 'CaseNo :',
+                      text: '',
                       padding: EdgeInsets.only(left: 5)),
                   SizedBox(
                     height: 15,
                   ),
                   NameAndTextField(
                       controller: police,
+                      enable: true,
                       darkMode: widget.darkMode,
                       height: height / 30,
                       width: width / 5,
                       fontsize: height / 65,
                       name: 'Police :',
+                      text: '',
                       padding: EdgeInsets.only(left: 5)),
                   SizedBox(
                     height: 5,
                   ),
                   NameAndTextField(
                       controller: location,
+                      enable: true,
                       darkMode: widget.darkMode,
                       height: height / 30,
                       width: width / 3,
                       fontsize: height / 65,
                       name: 'Location :',
+                      text: '',
                       padding: EdgeInsets.only(left: 5)),
                   SizedBox(
                     height: 20,
@@ -408,21 +414,12 @@ class _FormScreenState extends State<FormScreen> {
       label: 'JPEGs,PDFs,PDFs',
       extensions: <String>['jpg', 'jpeg', 'png', 'pdf'],
     );
-    /*const XTypeGroup pngTypeGroup = XTypeGroup(
-      label: 'PNGs',
-      extensions: <String>['png'],
-    );
-    const XTypeGroup pdfTypeGroup = XTypeGroup(
-      label: 'PDFs',
-      extensions: <String>['pdf'],
-    );*/
+
     final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
       jpgsTypeGroup,
-      // pngTypeGroup,
-      // pdfTypeGroup,
     ]);
 
-    if (files != null) {
+    if (files.isNotEmpty) {
       setState(() {
         for (int i = 0; i < files.length; i++) {
           File filePath = File(files[i].path);
