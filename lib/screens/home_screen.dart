@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
 import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
 import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
@@ -33,10 +34,12 @@ class _HoomeScreenState extends State<HoomeScreen> {
   bool? darkMode;
   Color? backgroundColor;
   final searchText = TextEditingController();
+  List<String> formNameList = [];
 
   @override
   void initState() {
     super.initState();
+    dataReadFunctiond(widget.isarDBInstance);
     _initializeWindow();
     setState(() {
       imageFile = Uint8List.fromList(widget.user.imageBytes!);
@@ -62,6 +65,9 @@ class _HoomeScreenState extends State<HoomeScreen> {
 
   @override
   void dispose() {
+    setState(() {
+      formNameList.clear();
+    });
     super.dispose();
   }
 
@@ -87,8 +93,89 @@ class _HoomeScreenState extends State<HoomeScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.amber,
+                            color: darkMode == true
+                                ? Colors.white
+                                : Colors.grey.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(15)),
+                        child: GridView.builder(
+                            primary: false,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount:
+                                  10, // Adjust the number of columns as needed
+                              crossAxisSpacing: 1,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: formNameList.length,
+                            itemBuilder: (context, index) {
+                              return Stack(
+                                children: [
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, bottom: 8),
+                                      child: Container(
+                                        padding: EdgeInsets.all(1),
+                                        width: width / 18,
+                                        height: height / 10,
+                                        child: ElevatedButton(
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                                alignment: Alignment.center,
+                                                side: null,
+                                                /*: BorderSide(
+                                                        width: 1.5,
+                                                        strokeAlign: BorderSide
+                                                            .strokeAlignOutside,
+                                                        color: darkMode == true
+                                                            ? Colors.black
+                                                                .withOpacity(
+                                                                    0.6)
+                                                            : Color(
+                                                                0xFF7D7D7D)),*/
+                                                padding: EdgeInsets.only(
+                                                    bottom: height / 60,
+                                                    right: width / 900),
+                                                elevation: 0,
+                                                backgroundColor:
+                                                    darkMode == true
+                                                        ? Colors.transparent
+                                                        : Colors.grey
+                                                            .withOpacity(0.2),
+                                                shadowColor: Colors.transparent,
+                                                foregroundColor:
+                                                    darkMode == true
+                                                        ? Colors.black
+                                                        : Colors.grey,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10))),
+                                            child: Image.asset(
+                                                'lib/image_assets/folder.png')),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 1, right: 1),
+                                      child: Text(
+                                        formNameList[index],
+                                        style: TextStyle(
+                                            fontSize: width / 100,
+                                            color: Colors.black,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
                       ),
                     ),
                     SizedBox(
@@ -103,14 +190,24 @@ class _HoomeScreenState extends State<HoomeScreen> {
                           color: Colors.purple,
                           borderRadius: BorderRadius.circular(15)),
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(PageAnimationTransition(
+                        onPressed: () async {
+                          /* Navigator.of(context).push(PageAnimationTransition(
                               page: FormScreen(
                                 user: widget.user,
                                 isarDBInstance: widget.isarDBInstance,
                                 darkMode: darkMode!,
                               ),
-                              pageAnimationType: FadeAnimationTransition()));
+                              pageAnimationType: FadeAnimationTransition()));*/
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FormScreen(
+                                      user: widget.user,
+                                      isarDBInstance: widget.isarDBInstance,
+                                      darkMode: darkMode!,
+                                    )),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                             elevation: 10,
@@ -416,5 +513,29 @@ class _HoomeScreenState extends State<HoomeScreen> {
         );
       }),
     );
+  }
+
+  Future<void> dataReadFunctiond(Isar isar) async {
+    final formsResult =
+        await isar.formsClass.filter().userIDEqualTo(widget.user.id).findAll();
+
+    List<String> forSortNames = [];
+
+    setState(() {
+      for (int i = 0; i < formsResult.length; i++) {
+        forSortNames.add(formsResult[i].police.toString());
+      }
+      forSortNames.sort();
+
+      for (int j = 0; j < forSortNames.length - 1; j++) {
+        if (forSortNames[j] != forSortNames[j + 1]) {
+          formNameList.add(forSortNames[j]);
+        }
+      }
+      // Add the last element since it won't be covered by the loop
+      formNameList.add(forSortNames[forSortNames.length - 1]);
+    });
+
+    print(formNameList);
   }
 }

@@ -22,13 +22,18 @@ const DocFIlesClassSchema = CollectionSchema(
       name: r'caseNo',
       type: IsarType.string,
     ),
-    r'documentBytes': PropertySchema(
+    r'docName': PropertySchema(
       id: 1,
+      name: r'docName',
+      type: IsarType.string,
+    ),
+    r'documentBytes': PropertySchema(
+      id: 2,
       name: r'documentBytes',
       type: IsarType.longList,
     ),
     r'userID': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'userID',
       type: IsarType.long,
     )
@@ -60,6 +65,12 @@ int _docFIlesClassEstimateSize(
     }
   }
   {
+    final value = object.docName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.documentBytes;
     if (value != null) {
       bytesCount += 3 + value.length * 8;
@@ -75,8 +86,9 @@ void _docFIlesClassSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.caseNo);
-  writer.writeLongList(offsets[1], object.documentBytes);
-  writer.writeLong(offsets[2], object.userID);
+  writer.writeString(offsets[1], object.docName);
+  writer.writeLongList(offsets[2], object.documentBytes);
+  writer.writeLong(offsets[3], object.userID);
 }
 
 DocFIlesClass _docFIlesClassDeserialize(
@@ -88,8 +100,9 @@ DocFIlesClass _docFIlesClassDeserialize(
   final object = DocFIlesClass();
   object.caseNo = reader.readStringOrNull(offsets[0]);
   object.docId = id;
-  object.documentBytes = reader.readLongList(offsets[1]);
-  object.userID = reader.readLongOrNull(offsets[2]);
+  object.docName = reader.readStringOrNull(offsets[1]);
+  object.documentBytes = reader.readLongList(offsets[2]);
+  object.userID = reader.readLongOrNull(offsets[3]);
   return object;
 }
 
@@ -103,8 +116,10 @@ P _docFIlesClassDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readLongList(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
+      return (reader.readLongList(offset)) as P;
+    case 3:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -417,6 +432,160 @@ extension DocFIlesClassQueryFilter
   }
 
   QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'docName',
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'docName',
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'docName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'docName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'docName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'docName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
+      docNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'docName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterFilterCondition>
       documentBytesIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -674,6 +843,18 @@ extension DocFIlesClassQuerySortBy
     });
   }
 
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> sortByDocName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'docName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> sortByDocNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'docName', Sort.desc);
+    });
+  }
+
   QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> sortByUserID() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userID', Sort.asc);
@@ -713,6 +894,18 @@ extension DocFIlesClassQuerySortThenBy
     });
   }
 
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> thenByDocName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'docName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> thenByDocNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'docName', Sort.desc);
+    });
+  }
+
   QueryBuilder<DocFIlesClass, DocFIlesClass, QAfterSortBy> thenByUserID() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userID', Sort.asc);
@@ -732,6 +925,13 @@ extension DocFIlesClassQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'caseNo', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, DocFIlesClass, QDistinct> distinctByDocName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'docName', caseSensitive: caseSensitive);
     });
   }
 
@@ -760,6 +960,12 @@ extension DocFIlesClassQueryProperty
   QueryBuilder<DocFIlesClass, String?, QQueryOperations> caseNoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'caseNo');
+    });
+  }
+
+  QueryBuilder<DocFIlesClass, String?, QQueryOperations> docNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'docName');
     });
   }
 

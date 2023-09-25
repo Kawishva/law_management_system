@@ -6,6 +6,7 @@ part 'docFilesSchema.g.dart';
 class DocFIlesClass {
   Id docId = Isar.autoIncrement;
   late int? userID;
+  late String? docName;
   late String? caseNo;
   List<int>? documentBytes;
 }

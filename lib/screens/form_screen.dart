@@ -36,6 +36,7 @@ class _FormScreenState extends State<FormScreen> {
   final police = TextEditingController();
   final location = TextEditingController();
   List<File> userFiles = [];
+  List<XFile> importedFilesList = [];
 
   @override
   void initState() {
@@ -185,8 +186,8 @@ class _FormScreenState extends State<FormScreen> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
                                 6, // Adjust the number of columns as needed
-                            crossAxisSpacing: 0,
-                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 10,
                           ),
                           itemCount: userFiles.length + 1,
                           itemBuilder: (context, index) {
@@ -194,7 +195,8 @@ class _FormScreenState extends State<FormScreen> {
                               children: [
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(top: 0),
+                                    padding: const EdgeInsets.only(
+                                        top: 0, bottom: 8),
                                     child: Container(
                                       padding: EdgeInsets.all(1),
                                       width: width / 20,
@@ -203,41 +205,66 @@ class _FormScreenState extends State<FormScreen> {
                                           onPressed: () {
                                             index == 0
                                                 ? userFilePickFunction()
-                                                : print(index);
+                                                : print(
+                                                    importedFilesList[index - 1]
+                                                        .name);
                                           },
                                           style: ElevatedButton.styleFrom(
                                               alignment: Alignment.center,
-                                              side: BorderSide(
-                                                  width: 1.5,
-                                                  strokeAlign: BorderSide
-                                                      .strokeAlignOutside,
-                                                  color: widget.darkMode == true
-                                                      ? Colors.black
-                                                          .withOpacity(0.6)
-                                                      : Color(0xFF7D7D7D)),
+                                              side: index != 0
+                                                  ? null
+                                                  : BorderSide(
+                                                      width: 1.5,
+                                                      strokeAlign: BorderSide
+                                                          .strokeAlignOutside,
+                                                      color: widget.darkMode == true
+                                                          ? Colors.black
+                                                              .withOpacity(0.6)
+                                                          : Color(0xFF7D7D7D)),
                                               padding: EdgeInsets.only(
                                                   bottom: height / 60,
                                                   right: width / 900),
                                               elevation: 0,
                                               backgroundColor:
-                                                  Colors.transparent,
+                                                  widget.darkMode == true
+                                                      ? Colors.transparent
+                                                      : Colors.grey
+                                                          .withOpacity(0.2),
                                               shadowColor: Colors.transparent,
-                                              foregroundColor: widget.darkMode == true
-                                                  ? Colors.black
-                                                  : Colors.grey,
+                                              foregroundColor:
+                                                  widget.darkMode == true
+                                                      ? Colors.black
+                                                      : Colors.grey,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          10))),
+                                                      BorderRadius.circular(10))),
                                           child: index == 0
                                               ? Icon(
                                                   Icons.note_add_rounded,
                                                   size: width / 20,
                                                 )
-                                              : Image.asset(
-                                                  'lib/image_assets/pdf.png')),
+                                              : importedFilesList[index - 1].name.endsWith('.pdf')
+                                                  ? Image.asset('lib/image_assets/pdf.png')
+                                                  : Image.file(userFiles[index - 1])),
                                     ),
                                   ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: index == 0
+                                      ? null
+                                      : Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 1, right: 1),
+                                          child: Text(
+                                            importedFilesList[index - 1].name,
+                                            style: TextStyle(
+                                                fontSize: width / 150,
+                                                color: Colors.black,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ),
                                 ),
                                 Align(
                                   alignment: Alignment.topRight,
@@ -252,6 +279,8 @@ class _FormScreenState extends State<FormScreen> {
                                                 onPressed: () {
                                                   setState(() {
                                                     userFiles
+                                                        .removeAt(index - 1);
+                                                    importedFilesList
                                                         .removeAt(index - 1);
                                                   });
                                                 },
@@ -342,6 +371,7 @@ class _FormScreenState extends State<FormScreen> {
                             onPressed: () {
                               setState(() {
                                 userFiles.clear();
+                                importedFilesList.clear();
                                 caseNo.clear();
                                 police.clear();
                                 location.clear();
@@ -375,30 +405,31 @@ class _FormScreenState extends State<FormScreen> {
 
   Future<void> userFilePickFunction() async {
     const XTypeGroup jpgsTypeGroup = XTypeGroup(
-      label: 'JPEGs',
-      extensions: <String>['jpg', 'jpeg'],
+      label: 'JPEGs,PDFs,PDFs',
+      extensions: <String>['jpg', 'jpeg', 'png', 'pdf'],
     );
-    const XTypeGroup pngTypeGroup = XTypeGroup(
+    /*const XTypeGroup pngTypeGroup = XTypeGroup(
       label: 'PNGs',
       extensions: <String>['png'],
     );
     const XTypeGroup pdfTypeGroup = XTypeGroup(
       label: 'PDFs',
       extensions: <String>['pdf'],
-    );
+    );*/
     final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
       jpgsTypeGroup,
-      pngTypeGroup,
-      pdfTypeGroup,
+      // pngTypeGroup,
+      // pdfTypeGroup,
     ]);
 
     if (files != null) {
-      //Uint8List imageBytes = await file.readAsBytes();
       setState(() {
         for (int i = 0; i < files.length; i++) {
           File filePath = File(files[i].path);
           userFiles.add(filePath);
+          importedFilesList.add(files[i]);
         }
+
         files.clear();
       });
     } else {
@@ -432,6 +463,7 @@ class _FormScreenState extends State<FormScreen> {
     for (int j = 0; j < fileConvertedByteList.length; j++) {
       final newdocFile = DocFIlesClass()
         ..userID = widget.user!.id
+        ..docName = importedFilesList[j].name
         ..caseNo = caseNo.text
         ..documentBytes = fileConvertedByteList[j];
 
@@ -439,5 +471,12 @@ class _FormScreenState extends State<FormScreen> {
         await isar.docFIlesClass.put(newdocFile);
       });
     }
+    setState(() {
+      userFiles.clear();
+      importedFilesList.clear();
+      caseNo.clear();
+      police.clear();
+      location.clear();
+    });
   }
 }
