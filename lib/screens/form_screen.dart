@@ -423,7 +423,7 @@ class _FormScreenState extends State<FormScreen> {
       setState(() {
         for (int i = 0; i < files.length; i++) {
           File filePath = File(files[i].path);
-          userFiles.add(filePath);
+          userFiles.add(filePath); //converting them ass files
           importedFilesList.add(files[i]);
         }
 
@@ -449,9 +449,9 @@ class _FormScreenState extends State<FormScreen> {
 
     final newForm = FormsClass()
       ..userID = widget.user!.id
-      ..caseNo = caseNo.text
-      ..police = police.text
-      ..location = location.text;
+      ..caseNo = caseNo.text.toLowerCase()
+      ..police = police.text.toLowerCase()
+      ..location = location.text.toLowerCase();
 
     await isar.writeTxn(() async {
       await isar.formsClass.put(newForm);

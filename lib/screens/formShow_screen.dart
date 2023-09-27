@@ -3,6 +3,7 @@ import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
+import 'package:fluttericon/typicons_icons.dart';
 import 'package:isar/isar.dart';
 import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
@@ -32,9 +33,9 @@ class _FormShowScreenState extends State<FormShowScreen> {
   bool? darkMode;
   Color? backgroundColor;
   final searchText = TextEditingController();
-  List<String> formNameList = [];
   String? policeName;
   List<FormsClass> formList = [];
+  List<int> deleteFormList = [];
   String caseNo = '', police = '', location = '';
   final contollor = TextEditingController();
 
@@ -54,7 +55,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
   void dispose() {
     setState(() {
       imageFile = null;
+      deleteFormList.clear();
+      formList.clear();
     });
+
     super.dispose();
   }
 
@@ -95,7 +99,7 @@ class _FormShowScreenState extends State<FormShowScreen> {
                               crossAxisSpacing: 1,
                               mainAxisSpacing: 10,
                             ),
-                            itemCount: formNameList.length,
+                            itemCount: formList.length,
                             itemBuilder: (context, index) {
                               return Stack(
                                 children: [
@@ -107,43 +111,90 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                         padding: EdgeInsets.all(1),
                                         width: width / 18,
                                         height: height / 10,
+                                        child: GestureDetector(
+                                          onDoubleTap: () {
+                                            print('2 taps');
+                                          },
+                                          child: ElevatedButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  caseNo = formList[index]
+                                                      .caseNo
+                                                      .toString();
+
+                                                  location = formList[index]
+                                                      .location
+                                                      .toString();
+
+                                                  police = widget.police;
+                                                });
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  alignment: Alignment.center,
+                                                  side: null,
+                                                  padding: EdgeInsets.only(
+                                                      bottom: height / 60,
+                                                      right: width / 900),
+                                                  elevation: 0,
+                                                  backgroundColor:
+                                                      darkMode == true
+                                                          ? Colors.transparent
+                                                          : Colors.grey
+                                                              .withOpacity(0.2),
+                                                  shadowColor:
+                                                      Colors.transparent,
+                                                  foregroundColor:
+                                                      darkMode == true
+                                                          ? Colors.black
+                                                          : Colors.grey,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10))),
+                                              child: Image.asset(
+                                                  'lib/image_assets/doc.png')),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 2),
+                                      child: Container(
+                                        width: width / 75,
+                                        height: width / 75,
                                         child: ElevatedButton(
                                             onPressed: () {
                                               setState(() {
-                                                caseNo = formList[index]
-                                                    .caseNo
-                                                    .toString();
-
-                                                location = formList[index]
-                                                    .location
-                                                    .toString();
-
-                                                police = widget.police;
+                                                deleteFormList.add(
+                                                    formList[index].caseId);
+                                                formList.removeAt(index);
                                               });
+
+                                              print(deleteFormList);
                                             },
                                             style: ElevatedButton.styleFrom(
-                                                alignment: Alignment.center,
-                                                side: null,
                                                 padding: EdgeInsets.only(
-                                                    bottom: height / 60,
-                                                    right: width / 900),
-                                                elevation: 0,
-                                                backgroundColor:
-                                                    darkMode == true
-                                                        ? Colors.transparent
-                                                        : Colors.grey
-                                                            .withOpacity(0.2),
-                                                shadowColor: Colors.transparent,
+                                                  bottom: height / 60,
+                                                ),
+                                                elevation: 2,
+                                                backgroundColor: darkMode ==
+                                                        true
+                                                    ? Colors.red
+                                                    : const Color(0xFF7D7D7D),
                                                 foregroundColor:
                                                     darkMode == true
                                                         ? Colors.black
-                                                        : Colors.grey,
+                                                        : Colors.white,
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            10))),
-                                            child: Image.asset(
-                                                'lib/image_assets/doc.png')),
+                                                            50))),
+                                            child: Icon(
+                                              Typicons.cancel_outline,
+                                              size: width / 90,
+                                            )),
                                       ),
                                     ),
                                   ),
@@ -177,80 +228,72 @@ class _FormShowScreenState extends State<FormShowScreen> {
                           child: Container(
                             width: width / 2.2,
                             height: height,
+                            alignment: Alignment.center,
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(25)),
-                            child: Center(
-                                //form
-                                child: Container(
-                              width: width / 2,
-                              height: height,
-                              decoration: BoxDecoration(
-                                  color: darkMode == true
-                                      ? Color(0xFFC9C9C9)
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListView(
-                                children: [
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Form',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  NameAndTextField(
-                                      controller: contollor,
-                                      enable: false,
-                                      darkMode: darkMode!,
-                                      height: height / 30,
-                                      width: width / 20,
-                                      fontsize: height / 65,
-                                      name: 'CaseNo :',
-                                      text: caseNo,
-                                      padding: EdgeInsets.only(left: 5)),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  NameAndTextField(
-                                      controller: contollor,
-                                      enable: false,
-                                      darkMode: darkMode!,
-                                      height: height / 30,
-                                      width: width / 5,
-                                      fontsize: height / 65,
-                                      name: 'Police :',
-                                      text: police,
-                                      padding: EdgeInsets.only(left: 5)),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  NameAndTextField(
-                                      controller: contollor,
-                                      enable: false,
-                                      darkMode: darkMode!,
-                                      height: height / 30,
-                                      width: width / 3,
-                                      fontsize: height / 65,
-                                      name: 'Location :',
-                                      text: location,
-                                      padding: EdgeInsets.only(left: 5)),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
-                            )),
+                                color: darkMode == true
+                                    ? Color(0xFFC9C9C9)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: ListView(
+                              children: [
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Form',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                NameAndTextField(
+                                    controller: contollor,
+                                    enable: false,
+                                    darkMode: darkMode!,
+                                    height: height / 30,
+                                    width: width / 20,
+                                    fontsize: height / 65,
+                                    name: 'CaseNo :',
+                                    text: caseNo,
+                                    padding: EdgeInsets.only(left: 5)),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                NameAndTextField(
+                                    controller: contollor,
+                                    enable: false,
+                                    darkMode: darkMode!,
+                                    height: height / 30,
+                                    width: width / 5,
+                                    fontsize: height / 65,
+                                    name: 'Police :',
+                                    text: police,
+                                    padding: EdgeInsets.only(left: 5)),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                NameAndTextField(
+                                    controller: contollor,
+                                    enable: false,
+                                    darkMode: darkMode!,
+                                    height: height / 30,
+                                    width: width / 3,
+                                    fontsize: height / 65,
+                                    name: 'Location :',
+                                    text: location,
+                                    padding: EdgeInsets.only(left: 5)),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Align(
@@ -258,7 +301,7 @@ class _FormShowScreenState extends State<FormShowScreen> {
                           child: Padding(
                             padding: EdgeInsets.only(left: width / 3),
                             child: ElevatedButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 /* Navigator.of(context).push(PageAnimationTransition(
                                   page: FormScreen(
                                     user: widget.user,
@@ -344,6 +387,8 @@ class _FormShowScreenState extends State<FormShowScreen> {
                               bottomRight: Radius.circular(20))),
                       child: TextButton(
                         onPressed: () {
+                          dataDeleteFunctiond(widget.isarDBInstance);
+
                           Navigator.of(context).push(PageAnimationTransition(
                               page: HoomeScreen(
                                 user: widget.user,
@@ -390,10 +435,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
-                            backgroundImage: imageFile == Uint8List(0)
-                                ? AssetImage(
-                                    'lib/image_assets/login_background_image1.jpg')
-                                : Image.memory(imageFile!).image,
+                            backgroundImage:
+                                imageFile == null || imageFile!.isEmpty
+                                    ? AssetImage('lib/image_assets/userDp.png')
+                                    : Image.memory(imageFile!).image,
                           ))),
                 )),
             Padding(
@@ -516,9 +561,8 @@ class _FormShowScreenState extends State<FormShowScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: width / 40,
-                        backgroundImage: imageFile == Uint8List(0)
-                            ? AssetImage(
-                                'lib/image_assets/login_background_image1.jpg')
+                        backgroundImage: imageFile == null || imageFile!.isEmpty
+                            ? AssetImage('lib/image_assets/userDp.png')
                             : Image.memory(imageFile!).image,
                       ),
                       SizedBox(
@@ -665,15 +709,15 @@ class _FormShowScreenState extends State<FormShowScreen> {
           forSortNames.add(formsResult[i].caseNo.toString());
           formList.add(formsResult[i]);
         }
-        forSortNames.sort();
-        // formList.sort();
-
-        for (int j = 0; j < forSortNames.length; j++) {
-          formNameList.add(forSortNames[j]);
-        }
       });
+      print(formList.first.caseNo);
     }
+  }
 
-    print(formList.first.caseNo);
+  Future<void> dataDeleteFunctiond(Isar isar) async {
+    await isar.writeTxn(() async {
+      await isar.formsClass.deleteAll(deleteFormList);
+    });
+    print(deleteFormList);
   }
 }

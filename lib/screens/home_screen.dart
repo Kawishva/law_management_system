@@ -42,6 +42,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
   @override
   void initState() {
     super.initState();
+
     dataReadFunctiond(widget.isarDBInstance);
     _initializeWindow();
     setState(() {
@@ -49,6 +50,7 @@ class _HoomeScreenState extends State<HoomeScreen> {
       darkMode = widget.user.darkmode!;
       backgroundColor = darkMode == false ? Colors.white : Colors.black;
     });
+    print(imageFile.toString());
   }
 
   void _initializeWindow() async {
@@ -371,10 +373,10 @@ class _HoomeScreenState extends State<HoomeScreen> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
-                            backgroundImage: imageFile == Uint8List(0)
-                                ? AssetImage(
-                                    'lib/image_assets/login_background_image1.jpg')
-                                : Image.memory(imageFile!).image,
+                            backgroundImage:
+                                imageFile == null || imageFile!.isEmpty
+                                    ? AssetImage('lib/image_assets/userDp.png')
+                                    : Image.memory(imageFile!).image,
                           ))),
                 )),
             Padding(
@@ -497,9 +499,8 @@ class _HoomeScreenState extends State<HoomeScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: width / 40,
-                        backgroundImage: imageFile == Uint8List(0)
-                            ? AssetImage(
-                                'lib/image_assets/login_background_image1.jpg')
+                        backgroundImage: imageFile == null || imageFile!.isEmpty
+                            ? AssetImage('lib/image_assets/userDp.png')
                             : Image.memory(imageFile!).image,
                       ),
                       SizedBox(
@@ -650,8 +651,12 @@ class _HoomeScreenState extends State<HoomeScreen> {
         }
         // Add the last element since it won't be covered by the loop
         formNameList.add(forSortNames[forSortNames.length - 1]);
+
+        forSortNames.clear();
+        formsResult.clear();
       });
     }
+
     print(formNameList);
   }
 }
