@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,14 @@ import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fluttericon/iconic_icons.dart';
 import 'package:fluttericon/typicons_icons.dart';
 import 'package:isar/isar.dart';
+import 'package:law_management_system/isar_DB/entities/docFilesSchema.dart';
 import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:law_management_system/isar_DB/entities/userSchema.dart';
 import 'package:law_management_system/screens/home_screen.dart';
 import 'package:page_animation_transition/animations/left_to_right_faded_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../components/form_components/name&textfield.dart';
 import 'login_screen.dart';
 
@@ -36,13 +40,16 @@ class _FormShowScreenState extends State<FormShowScreen> {
   String? policeName;
   List<FormsClass> formList = [];
   List<int> deleteFormList = [];
+  List<DocFIlesClass> docFilesList = [];
+  List<String> deleteDocList = [];
   String caseNo = '', police = '', location = '';
   final contollor = TextEditingController();
+  File? file;
 
   @override
   void initState() {
     super.initState();
-    dataReadFunctiond(widget.isarDBInstance);
+    dataReadCaseFilesFunction(widget.isarDBInstance);
     setState(() {
       imageFile = Uint8List.fromList(widget.user.imageBytes!);
       darkMode = widget.user.darkmode!;
@@ -117,6 +124,11 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                           },
                                           child: ElevatedButton(
                                               onPressed: () {
+                                                dataReadDocFilesFunction(
+                                                    widget.isarDBInstance,
+                                                    formList[index]
+                                                        .caseNo
+                                                        .toString());
                                                 setState(() {
                                                   caseNo = formList[index]
                                                       .caseNo
@@ -169,6 +181,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                               setState(() {
                                                 deleteFormList.add(
                                                     formList[index].caseId);
+                                                deleteDocList.add(
+                                                    formList[index]
+                                                        .caseNo
+                                                        .toString());
                                                 formList.removeAt(index);
                                               });
 
@@ -289,8 +305,132 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                 SizedBox(
                                   height: 20,
                                 ),
-                                SizedBox(
-                                  height: 10,
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: width / 20, right: width / 20),
+                                  child: Container(
+                                    height: height / 3,
+                                    decoration: BoxDecoration(
+                                        color: darkMode == true
+                                            ? Color.fromARGB(255, 99, 99, 99)
+                                                .withOpacity(0.5)
+                                            : Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: GridView.builder(
+                                        primary: false,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount:
+                                              6, // Adjust the number of columns as needed
+                                          crossAxisSpacing: 1,
+                                          mainAxisSpacing: 10,
+                                        ),
+                                        itemCount: docFilesList.length,
+                                        itemBuilder: (context, index) {
+                                          return Stack(
+                                            children: [
+                                              Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 0, bottom: 8),
+                                                  child: Container(
+                                                    padding: null,
+                                                    width: width / 20,
+                                                    height: height / 10,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        openPDFinBrowser(
+                                                            docFilesList[index]
+                                                                .documentBytes!,
+                                                            docFilesList[index]
+                                                                .docName
+                                                                .toString());
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          padding:
+                                                              EdgeInsets.only(),
+                                                          elevation: 0,
+                                                          backgroundColor:
+                                                              darkMode == true
+                                                                  ? Colors
+                                                                      .transparent
+                                                                  : Colors.grey
+                                                                      .withOpacity(
+                                                                          0.2),
+                                                          shadowColor: Colors
+                                                              .transparent,
+                                                          foregroundColor:
+                                                              darkMode == true
+                                                                  ? Colors.black
+                                                                  : Colors.grey,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          0))),
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 10),
+                                                        child:
+                                                            docFilesList[index]
+                                                                    .docName
+                                                                    .toString()
+                                                                    .endsWith(
+                                                                        '.pdf')
+                                                                ? Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        bottom: height /
+                                                                            500),
+                                                                    child: Image
+                                                                        .asset(
+                                                                      'lib/image_assets/pdf.png',
+                                                                    ),
+                                                                  )
+                                                                : Padding(
+                                                                    padding: EdgeInsets
+                                                                        .all(width /
+                                                                            200),
+                                                                    child: Image
+                                                                        .memory(
+                                                                            Uint8List.fromList(docFilesList[index].documentBytes!)),
+                                                                  ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 1, right: 1),
+                                                  child: Text(
+                                                    docFilesList[index]
+                                                        .docName
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: width / 150,
+                                                        color: Colors.black,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                  ),
                                 ),
                               ],
                             ),
@@ -301,25 +441,7 @@ class _FormShowScreenState extends State<FormShowScreen> {
                           child: Padding(
                             padding: EdgeInsets.only(left: width / 3),
                             child: ElevatedButton(
-                              onPressed: () {
-                                /* Navigator.of(context).push(PageAnimationTransition(
-                                  page: FormScreen(
-                                    user: widget.user,
-                                    isarDBInstance: widget.isarDBInstance,
-                                    darkMode: darkMode!,
-                                  ),
-                                  pageAnimationType: FadeAnimationTransition()));*/
-
-                                /*   Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FormScreen(
-                                          user: widget.user,
-                                          isarDBInstance: widget.isarDBInstance,
-                                          darkMode: darkMode!,
-                                        )),
-                              );*/
-                              },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                   elevation: 10,
                                   fixedSize: Size(width / 15, height / 20),
@@ -387,7 +509,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
                               bottomRight: Radius.circular(20))),
                       child: TextButton(
                         onPressed: () {
-                          dataDeleteFunctiond(widget.isarDBInstance);
+                          dataDeleteFunction(widget.isarDBInstance);
+                          if (file != null) {
+                            file!.delete();
+                          }
 
                           Navigator.of(context).push(PageAnimationTransition(
                               page: HoomeScreen(
@@ -693,7 +818,7 @@ class _FormShowScreenState extends State<FormShowScreen> {
     );
   }
 
-  Future<void> dataReadFunctiond(Isar isar) async {
+  Future<void> dataReadCaseFilesFunction(Isar isar) async {
     final formsResult = await isar.formsClass
         .filter()
         .userIDEqualTo(widget.user.id)
@@ -702,11 +827,8 @@ class _FormShowScreenState extends State<FormShowScreen> {
         .findAll();
 
     if (await formsResult.isNotEmpty) {
-      List<String> forSortNames = [];
-
       setState(() {
         for (int i = 0; i < formsResult.length; i++) {
-          forSortNames.add(formsResult[i].caseNo.toString());
           formList.add(formsResult[i]);
         }
       });
@@ -714,10 +836,54 @@ class _FormShowScreenState extends State<FormShowScreen> {
     }
   }
 
-  Future<void> dataDeleteFunctiond(Isar isar) async {
+  Future<void> dataReadDocFilesFunction(Isar isar, String caseNo) async {
+    final docFilesResult = await isar.docFIlesClass // Correct schema name
+        .filter()
+        .userIDEqualTo(widget.user.id)
+        .and()
+        .caseNoEqualTo(caseNo)
+        .findAll();
+
+    if (await docFilesResult.isNotEmpty) {
+      setState(() {
+        docFilesList.clear();
+        for (int j = 0; j < docFilesResult.length; j++) {
+          docFilesList.add(docFilesResult[j]);
+        }
+      });
+      print(docFilesList.first.documentBytes);
+    } else {
+      print('is empty');
+    }
+  }
+
+  Future<void> dataDeleteFunction(Isar isar) async {
     await isar.writeTxn(() async {
       await isar.formsClass.deleteAll(deleteFormList);
     });
+    for (int i = 0; i < deleteDocList.length; i++) {
+      await isar.writeTxn(() async {
+        await isar.docFIlesClass
+            .filter()
+            .caseNoEqualTo(deleteDocList[i])
+            .deleteAll();
+      });
+    }
     print(deleteFormList);
+  }
+
+  Future<void> openPDFinBrowser(List<int> pdfBytes, String fileName) async {
+    if (file != null) {
+      file!.delete();
+    }
+
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/$fileName';
+
+    file = File(filePath);
+    await file!.writeAsBytes(pdfBytes);
+    await launchUrl(file!.uri);
+
+    print(filePath);
   }
 }

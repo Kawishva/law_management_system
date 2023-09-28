@@ -10,8 +10,10 @@ import 'package:law_management_system/isar_DB/entities/docFilesSchema.dart';
 import 'package:law_management_system/isar_DB/entities/formSchema.dart';
 import 'package:page_animation_transition/animations/fade_animation_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 import '../components/form_components/name&textfield.dart';
+import 'package:pdf_thumbnail/pdf_thumbnail.dart';
 import 'home_screen.dart';
 
 class FormScreen extends StatefulWidget {
@@ -204,16 +206,17 @@ class _FormScreenState extends State<FormScreen> {
                                     padding: const EdgeInsets.only(
                                         top: 0, bottom: 8),
                                     child: Container(
-                                      padding: EdgeInsets.all(1),
+                                      padding: index == 0
+                                          ? EdgeInsets.all(10)
+                                          : null,
                                       width: width / 20,
                                       height: height / 10,
                                       child: ElevatedButton(
                                           onPressed: () {
                                             index == 0
                                                 ? userFilePickFunction()
-                                                : print(
-                                                    importedFilesList[index - 1]
-                                                        .name);
+                                                : openPDFinBrowser(
+                                                    userFiles[index - 1].uri);
                                           },
                                           style: ElevatedButton.styleFrom(
                                               alignment: Alignment.center,
@@ -247,11 +250,29 @@ class _FormScreenState extends State<FormScreen> {
                                           child: index == 0
                                               ? Icon(
                                                   Icons.note_add_rounded,
-                                                  size: width / 20,
+                                                  size: width / 40,
                                                 )
                                               : importedFilesList[index - 1].name.endsWith('.pdf')
-                                                  ? Image.asset('lib/image_assets/pdf.png')
-                                                  : Image.file(userFiles[index - 1])),
+                                                  ? Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: width / 150,
+                                                          top: 1),
+                                                      child:
+                                                          PdfThumbnail.fromFile(
+                                                        userFiles[index - 1]
+                                                            .path,
+                                                        currentPage: 0,
+                                                        height: width / 21,
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                      ),
+                                                    )
+                                                  : Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10),
+                                                      child: Image.file(
+                                                          userFiles[index - 1]),
+                                                    )),
                                     ),
                                   ),
                                 ),
@@ -475,5 +496,9 @@ class _FormScreenState extends State<FormScreen> {
       police.clear();
       location.clear();
     });
+  }
+
+  Future<void> openPDFinBrowser(Uri docURI) async {
+    await launchUrl(docURI);
   }
 }
