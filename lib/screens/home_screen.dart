@@ -50,7 +50,6 @@ class _HoomeScreenState extends State<HoomeScreen> {
       darkMode = widget.user.darkmode!;
       backgroundColor = darkMode == false ? Colors.white : Colors.black;
     });
-    print(imageFile.toString());
   }
 
   void _initializeWindow() async {
@@ -285,14 +284,6 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                           : Color(0xFF7D7D7D))),
                               child: IconButton(
                                   onPressed: () {
-                                    /* Navigator.of(context).push(PageAnimationTransition(
-                                        page: FormScreen(
-                                          user: widget.user,
-                                          isarDBInstance: widget.isarDBInstance,
-                                          darkMode: darkMode!,
-                                        ),
-                                        pageAnimationType: FadeAnimationTransition()));*/
-
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -379,83 +370,59 @@ class _HoomeScreenState extends State<HoomeScreen> {
                                     : Image.memory(imageFile!).image,
                           ))),
                 )),
-            Padding(
-              padding: EdgeInsets.only(top: 20, right: width / 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: width / 4,
-                    height: height / 23,
-                    child: Center(
-                      child: TextField(
-                        controller: searchText,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode == true
-                                    ? Colors.blue.withOpacity(0.5)
-                                    : Color(0xFF7D7D7D).withOpacity(0.5),
-                                width: 1.5),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode == true
-                                    ? Colors.blue
-                                    : Color(0xFF7D7D7D),
-                                width: 2,
-                                strokeAlign: BorderSide.strokeAlignOutside),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(25)),
-                          ),
-                          border: InputBorder.none,
-                          counterText: '',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            size: width / 80,
-                            color: darkMode == true
-                                ? Colors.blue
-                                : Color(0xFF7D7D7D),
-                          ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20, right: width / 15),
+                child: SizedBox(
+                  width: width / 4,
+                  height: height / 23,
+                  child: Center(
+                    child: TextField(
+                      controller: searchText,
+                      onChanged: (value) {
+                        searchFunction();
+                      },
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: darkMode == true
+                                  ? Colors.blue.withOpacity(0.5)
+                                  : Color(0xFF7D7D7D).withOpacity(0.5),
+                              width: 1.5),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: height / 65,
-                          color: darkMode == true ? Colors.blue : Colors.black,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: darkMode == true
+                                  ? Colors.blue
+                                  : Color(0xFF7D7D7D),
+                              width: 2,
+                              strokeAlign: BorderSide.strokeAlignOutside),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(25)),
                         ),
+                        border: InputBorder.none,
+                        counterText: '',
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: width / 80,
+                          color: darkMode == true
+                              ? Colors.blue
+                              : Color(0xFF7D7D7D),
+                        ),
+                      ),
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: height / 65,
+                        color: darkMode == true ? Colors.blue : Colors.black,
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    width: width / 13,
-                    height: height / 25,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          print(searchText.text);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            backgroundColor: darkMode == true
-                                ? Colors.blue
-                                : const Color(0xFF7D7D7D),
-                            foregroundColor:
-                                darkMode == true ? Colors.black : Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: width / 90,
-                                fontWeight: FontWeight.bold)),
-                        child: Text('Search')),
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -656,7 +623,9 @@ class _HoomeScreenState extends State<HoomeScreen> {
         formsResult.clear();
       });
     }
+  }
 
-    print(formNameList);
+  void searchFunction() {
+    print(searchText.text);
   }
 }

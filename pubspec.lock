@@ -580,7 +580,7 @@ packages:
     source: hosted
     version: "0.1.5+1"
   pdfx:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pdfx
       sha256: aa5f6f9156f44ddaaac007591f9b97bf3a6394bcae0591cc91a29a9b0e8274a3

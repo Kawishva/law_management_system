@@ -566,83 +566,59 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                     : Image.memory(imageFile!).image,
                           ))),
                 )),
-            Padding(
-              padding: EdgeInsets.only(top: 20, right: width / 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: width / 4,
-                    height: height / 23,
-                    child: Center(
-                      child: TextField(
-                        controller: searchText,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode == true
-                                    ? Colors.blue.withOpacity(0.5)
-                                    : Color(0xFF7D7D7D).withOpacity(0.5),
-                                width: 1.5),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode == true
-                                    ? Colors.blue
-                                    : Color(0xFF7D7D7D),
-                                width: 2,
-                                strokeAlign: BorderSide.strokeAlignOutside),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(25)),
-                          ),
-                          border: InputBorder.none,
-                          counterText: '',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            size: width / 80,
-                            color: darkMode == true
-                                ? Colors.blue
-                                : Color(0xFF7D7D7D),
-                          ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20, right: width / 15),
+                child: SizedBox(
+                  width: width / 4,
+                  height: height / 23,
+                  child: Center(
+                    child: TextField(
+                      controller: searchText,
+                      onChanged: (value) {
+                        dataSearchCaseFilesFunction(widget.isarDBInstance);
+                      },
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: darkMode == true
+                                  ? Colors.blue.withOpacity(0.5)
+                                  : Color(0xFF7D7D7D).withOpacity(0.5),
+                              width: 1.5),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: height / 65,
-                          color: darkMode == true ? Colors.blue : Colors.black,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: darkMode == true
+                                  ? Colors.blue
+                                  : Color(0xFF7D7D7D),
+                              width: 2,
+                              strokeAlign: BorderSide.strokeAlignOutside),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(25)),
                         ),
+                        border: InputBorder.none,
+                        counterText: '',
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: width / 80,
+                          color: darkMode == true
+                              ? Colors.blue
+                              : Color(0xFF7D7D7D),
+                        ),
+                      ),
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: height / 65,
+                        color: darkMode == true ? Colors.blue : Colors.black,
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    width: width / 13,
-                    height: height / 25,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          print(searchText.text);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            backgroundColor: darkMode == true
-                                ? Colors.blue
-                                : const Color(0xFF7D7D7D),
-                            foregroundColor:
-                                darkMode == true ? Colors.black : Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: width / 90,
-                                fontWeight: FontWeight.bold)),
-                        child: Text('Search')),
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -819,6 +795,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
   }
 
   Future<void> dataReadCaseFilesFunction(Isar isar) async {
+    setState(() {
+      formList.clear();
+    });
+
     final formsResult = await isar.formsClass
         .filter()
         .userIDEqualTo(widget.user.id)
@@ -832,11 +812,13 @@ class _FormShowScreenState extends State<FormShowScreen> {
           formList.add(formsResult[i]);
         }
       });
-      print(formList.first.caseNo);
     }
   }
 
   Future<void> dataReadDocFilesFunction(Isar isar, String caseNo) async {
+    setState(() {
+      docFilesList.clear();
+    });
     final docFilesResult = await isar.docFIlesClass // Correct schema name
         .filter()
         .userIDEqualTo(widget.user.id)
@@ -846,14 +828,10 @@ class _FormShowScreenState extends State<FormShowScreen> {
 
     if (await docFilesResult.isNotEmpty) {
       setState(() {
-        docFilesList.clear();
         for (int j = 0; j < docFilesResult.length; j++) {
           docFilesList.add(docFilesResult[j]);
         }
       });
-      print(docFilesList.first.documentBytes);
-    } else {
-      print('is empty');
     }
   }
 
@@ -869,7 +847,6 @@ class _FormShowScreenState extends State<FormShowScreen> {
             .deleteAll();
       });
     }
-    print(deleteFormList);
   }
 
   Future<void> openPDFinBrowser(List<int> pdfBytes, String fileName) async {
@@ -883,7 +860,36 @@ class _FormShowScreenState extends State<FormShowScreen> {
     file = File(filePath);
     await file!.writeAsBytes(pdfBytes);
     await launchUrl(file!.uri);
+  }
 
-    print(filePath);
+  Future<void> dataSearchCaseFilesFunction(Isar isar) async {
+    setState(() {
+      formList.clear();
+      docFilesList.clear();
+      caseNo = '';
+      police = '';
+      location = '';
+    });
+
+    final formsResult = await isar.formsClass
+        .filter()
+        .userIDEqualTo(widget.user.id)
+        .and()
+        .policeEqualTo(widget.police)
+        .and()
+        .caseNoEqualTo(searchText.text)
+        .or()
+        .locationEqualTo(searchText.text)
+        .findAll();
+
+    if (await formsResult.isNotEmpty) {
+      setState(() {
+        for (int i = 0; i < formsResult.length; i++) {
+          formList.add(formsResult[i]);
+        }
+      });
+    } else if (searchText.text.isEmpty) {
+      dataReadCaseFilesFunction(isar);
+    }
   }
 }
