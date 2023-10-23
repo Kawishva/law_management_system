@@ -187,8 +187,6 @@ class _FormShowScreenState extends State<FormShowScreen> {
                                                         .toString());
                                                 formList.removeAt(index);
                                               });
-
-                                              print(deleteFormList);
                                             },
                                             style: ElevatedButton.styleFrom(
                                                 padding: EdgeInsets.only(
@@ -847,6 +845,11 @@ class _FormShowScreenState extends State<FormShowScreen> {
             .deleteAll();
       });
     }
+
+    setState(() {
+      deleteDocList.clear();
+      deleteFormList.clear();
+    });
   }
 
   Future<void> openPDFinBrowser(List<int> pdfBytes, String fileName) async {
@@ -891,5 +894,7 @@ class _FormShowScreenState extends State<FormShowScreen> {
     } else if (searchText.text.isEmpty) {
       dataReadCaseFilesFunction(isar);
     }
+
+    dataDeleteFunction(isar);
   }
 }

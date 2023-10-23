@@ -47,6 +47,7 @@ dependencies:
   fluttericon: ^2.0.0
   pdf_thumbnail: ^0.1.5+1
   url_launcher: ^6.1.14
+  
 
 
   
